@@ -300,9 +300,9 @@ function Reviews() {
 
 function LeadForm() {
   return (
-    <section className="section">
+    <section className="section leadform-section">  {/* Add leadform-section */}
       <div className="container">
-        <h2>Join the waitlist</h2>
+        <h2>Activate Your Silent Potential</h2>
         <form className="form" onSubmit={(e)=>{e.preventDefault(); alert('Details submitted!')}}>
           <input className="input" placeholder="Full name" required />
           <input className="input" placeholder="Email" type="email" required />
@@ -316,40 +316,36 @@ function LeadForm() {
 
 function FloatingCTA() {
   // Autonomous drifting with bounce at edges + slight scroll influence
-  useEffect(() => {
-    const btn = document.querySelector('.floating-cta');
-    let x = window.innerWidth * 0.2;
-    let y = window.innerHeight * 0.3;
-    let vx = 1.10; // px/frame
-    let vy = 0.85;
-    const padding = 80; // keep away from edges
-    let raf;
+useEffect(() => {
+  const paddingTop = 80;      // min distance from top
+  let y = window.innerHeight * 0.6;
+  let vy = 0.45;              // vertical drift speed
+  let raf;
 
-    const step = () => {
-      const w = window.innerWidth;
-      const h = window.innerHeight;
-      x += vx;
-      y += vy;
+  const step = () => {
+    const h = window.innerHeight;
 
-      // Bounce off edges
-      if (x < padding) { x = padding; vx *= -1; }
-      if (x > w - padding) { x = w - padding; vx *= -1; }
-      if (y < padding) { y = padding; vy *= -1; }
-      if (y > h - padding) { y = h - padding; vy *= -1; }
+    // Vertical drift
+    y += vy;
 
-      // Apply
-      document.documentElement.style.setProperty('--cta-x', x + 'px');
-      document.documentElement.style.setProperty('--cta-y', y + 'px');
-      raf = requestAnimationFrame(step);
-    };
+    // Bounce only on top/bottom
+    if (y < paddingTop) { y = paddingTop; vy *= -1; }
+    if (y > h - paddingTop) { y = h - paddingTop; vy *= -1; }
 
-    // Gentle parallax with scroll
-    const onScroll = () => { y += (window.scrollY - y) * 0.0005; };
+    // Apply only Y via CSS var
+    document.documentElement.style.setProperty('--cta-y', y + 'px');
 
     raf = requestAnimationFrame(step);
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => { cancelAnimationFrame(raf); window.removeEventListener('scroll', onScroll); };
-  }, []);
+  };
+
+  // Parallax follow on scroll (vertical only)
+  const onScroll = () => { y += (window.scrollY - y) * 0.0004; };
+
+  raf = requestAnimationFrame(step);
+  window.addEventListener('scroll', onScroll, { passive: true });
+  return () => { cancelAnimationFrame(raf); window.removeEventListener('scroll', onScroll); };
+}, []);
+
 
   return (
     <div className="floating-cta" aria-hidden="false">

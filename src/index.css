@@ -191,3 +191,57 @@ h1, h2, h3 { line-height: 1.15; }
   filter: blur(12px) brightness(1.2);
 }
 @import url("https://fonts.googleapis.com/css2?family=Ojuju:wght@400..700&display=swap");
+/* Pin the CTA container to the right edge */
+.floating-cta {
+  position: fixed;
+  top: 0;                               /* baseline at top */
+  right: 18px;                          /* lock to right side */
+  left: auto !important;                /* override any left from elsewhere */
+  transform: translateY(var(--cta-y, 120px)); /* vertical-only movement */
+  z-index: 1000;
+}
+
+/* Optional: tighter on mobile */
+@media (max-width: 640px) {
+  .floating-cta { right: 10px; }
+}
+/* Center only the leadform section's container */
+.leadform-section .container {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.leadform-section .form {
+  display: grid;
+  gap: 16px;
+}
+/* Center only the h2 heading in leadform */
+.leadform-section h2 {
+  text-align: center;
+  margin-bottom: 25px;        /* spacing below heading */
+  font-size: 1.8rem;          /* adjust size if needed */
+}
+
+/* Keep form inputs left-aligned */
+.leadform-section .form {
+  display: grid;
+  gap: 15px;
+  text-align: left;           /* ensures inputs stay left */
+}
+/* Center the heading and add neon hover effect */
+.leadform-section h2 {
+  text-align: center;
+  margin-bottom: 24px;
+  font-size: 1.9rem;
+  color: #ffffff;                    /* white font color */
+  cursor: pointer;                   /* indicates interactivity */
+  transition: text-shadow 0.3s ease; /* smooth hover transition */
+}
+
+.leadform-section h2:hover {
+  text-shadow: 
+    0 0 5px rgba(255, 255, 255, 0.8),    /* inner glow */
+    0 0 10px rgba(255, 255, 255, 0.6),   /* middle glow */
+    0 0 20px rgba(255, 255, 255, 0.4),   /* outer glow */
+    0 0 30px rgba(255, 255, 255, 0.2);   /* far glow */
+}
