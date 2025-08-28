@@ -490,3 +490,40 @@ h1, h2, h3 { line-height: 1.15; }
     max-width: 220px;
   }
 }
+@media (max-width: 650px) {
+  .card.next {
+    opacity: 0.08;
+    filter: blur(2.2px) saturate(0.8) brightness(0.80);
+    background: rgba(8,14,16,0.08);
+    border-color: rgba(200,255,248,0.1);
+  }
+  .card.later {
+    opacity: 0.02;
+    filter: blur(3.1px) saturate(0.7) brightness(0.75);
+    background: rgba(8,14,16,0.04);
+    border-color: rgba(200,255,248,0.06);
+  }
+  .card.next::after,
+  .card.later::after {
+    content: \"\";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(70% 60% at 50% 50%, rgba(0,0,0,0.30), rgba(0,0,0,0.60));
+    border-radius: inherit;
+    pointer-events: none;
+  }
+}
+@media (max-width: 650px) {
+  .card.active {
+    background: rgba(8,14,16,0.25);
+    padding: 18px 7px;
+  }
+  .bullet-list li {
+    font-size: 1.01rem; /* set for optimal mobile reading */
+    padding: 8px 2px;
+  }
+}
+.bullet-list li {
+  color: #f7f8fa;
+  font-weight: 500;
+}
