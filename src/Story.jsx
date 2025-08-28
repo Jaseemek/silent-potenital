@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 
 export default function Story() {
-  // phases: halves fly-in -> dock to top -> then cards fade in
+  // phases: halves fly-in center -> dock to top -> then cards fade in
   const [dock, setDock] = useState(false);
   const [showSplash, setShowSplash] = useState(true);
   const [showCards, setShowCards] = useState(false); // cards appear only after title goes up
@@ -78,17 +78,19 @@ export default function Story() {
 
   return (
     <main className="story-root">
-      {/* NEW: Edge splash — halves sweep along the top and fade, no center block */}
+      {/* Center splash that plays once on load */}
       {showSplash && (
-        <div className={`edge-splash ${dock ? "dock" : ""}`}>
-          <span className="edge half left">Silent&nbsp;Equity&nbsp;Story&nbsp;—</span>
-          <span className="edge half right">“Every&nbsp;Traders&nbsp;Unspoken&nbsp;Life”</span>
+        <div className={`splash ${dock ? "dock" : ""}`}>
+          <h1 className="splash-title">
+            <span className="half left">Silent&nbsp;Equity&nbsp;Story&nbsp;—</span>
+            <span className="half right">“Every&nbsp;Traders&nbsp;Unspoken&nbsp;Life”</span>
+          </h1>
         </div>
       )}
 
-      {/* Sticky header with neon teal underline that activates when dock=true */}
+      {/* Docked (sticky) header that fades in while splash lifts */}
       <header className="topbar">
-        <h1 className={`top-title neon ${dock ? "is-in" : ""}`}>
+        <h1 className={`top-title ${dock ? "is-in" : ""}`}>
           <span>Silent Equity Story — </span>
           <span className="teal">“Every Traders Unspoken Life”</span>
         </h1>
@@ -119,63 +121,46 @@ export default function Story() {
         }
         .story-root{ min-height: 200vh; background: var(--bg); color: var(--fg); }
 
-        /* NEW edge-to-top splash */
-        .edge-splash{ position: fixed; inset: 0; pointer-events: none; z-index: 50; }
-        .edge{
-          position: fixed; top: 14px; /* align to header padding */
-          font-family: var(--heading-font); font-weight: 800;
-          font-size: clamp(1.1rem, 3.2vw, 2rem); letter-spacing: .3px;
-          white-space: nowrap; opacity: 0;
-          text-shadow: 0 8px 24px rgba(0,0,0,.25);
+        /* Splash split heading */
+        .splash{ position: fixed; inset: 0; display: grid; place-items: center; pointer-events: none; z-index: 50; }
+        .splash-title{
+          margin: 0; font-family: var(--heading-font); font-weight: 800;
+          font-size: clamp(1.5rem, 5vw, 3rem); line-height: 1.15; letter-spacing: .3px;
+          white-space: nowrap; text-align: center; display: inline-flex; gap: clamp(8px, 1.4vw, 18px);
+          filter: drop-shadow(0 8px 24px rgba(0,0,0,.35));
         }
-        .edge.half.left{ left: 6vw; transform: translateX(-120%); animation: sweepInLeft 950ms cubic-bezier(.2,.8,.2,1) forwards; }
-        .edge.half.right{ right: 6vw; transform: translateX(120%); color: var(--teal);
-          text-shadow: 0 0 12px rgba(18,231,207,.45);
-          animation: sweepInRight 950ms cubic-bezier(.2,.8,.2,1) forwards; animation-delay: 120ms; }
-        .edge-splash.dock{ animation: fadeEdge 800ms ease 550ms forwards; }
-        @keyframes sweepInLeft{
-          0%{ opacity:0; transform: translateX(-120%) scale(.98); filter: blur(2px); }
-          60%{ opacity:1; transform: translateX(6%)   scale(1.02); filter: blur(0); }
-          100%{ opacity:1; transform: translateX(0)   scale(1); }
-        }
-        @keyframes sweepInRight{
-          0%{ opacity:0; transform: translateX(120%)  scale(.98); filter: blur(2px); }
-          60%{ opacity:1; transform: translateX(-6%)  scale(1.02); filter: blur(0); }
-          100%{ opacity:1; transform: translateX(0)   scale(1); }
-        }
-        @keyframes fadeEdge{ to{ opacity:0; } }
+        .half{ display:inline-block; opacity:0; will-change: transform, opacity; }
+        .half.left{  animation: slideInLeft 950ms cubic-bezier(.2,.8,.2,1) forwards; }
+        .half.right{ animation: slideInRight 950ms cubic-bezier(.2,.8,.2,1) forwards; animation-delay: 120ms; }
+        .teal, .half.right{ color: var(--teal); text-shadow: 0 0 10px rgba(18,231,207,.45); }
+        @keyframes slideInLeft { 0%{opacity:0; transform: translateX(-12vw) scale(.96) ; filter: blur(2px);} 60%{opacity:1; transform: translateX(2vw)  scale(1.02);} 100%{opacity:1; transform: translateX(0) scale(1);} }
+        @keyframes slideInRight{ 0%{opacity:0; transform: translateX(12vw)  scale(.96) ; filter: blur(2px);} 60%{opacity:1; transform: translateX(-2vw) scale(1.02);} 100%{opacity:1; transform: translateX(0) scale(1);} }
+        .splash.dock{ animation: liftSplash 1000ms ease forwards; }
+        @keyframes liftSplash{ 0%{ transform:translateY(0); opacity:1; } 100%{ transform:translateY(-22vh); opacity:0; } }
 
-        /* Top sticky title with neon underline */
+        /* Top sticky title */
         .topbar{ position: sticky; top: 0; z-index: 10; display:grid; place-items:center; padding: 14px 6vw;
           background: linear-gradient(to bottom, rgba(16,26,32,.65), rgba(16,26,32,0)); backdrop-filter: blur(2px); }
         .top-title{ margin:0; font-family: var(--heading-font); font-weight:800; text-align:center;
           font-size: clamp(1.1rem, 3.2vw, 2rem); letter-spacing:.3px; opacity:0; transform: translateY(-8px);
-          transition: opacity 680ms ease, transform 680ms ease; position: relative; }
+          transition: opacity 680ms ease, transform 680ms ease; }
         .top-title.is-in{ opacity:1; transform: translateY(0); }
-
-        .top-title.neon::after{
-          content:""; position:absolute; left:50%; transform: translateX(-50%) scaleX(0); transform-origin: center;
-          bottom: -6px; width: min(560px, 70vw); height:3px; opacity:.95;
-          background: linear-gradient(90deg, transparent 0%, #34ffe7 15%, #7ff7ea 50%, #34ffe7 85%, transparent 100%);
-          box-shadow: 0 0 10px rgba(52,255,231,.65), 0 0 20px rgba(52,255,231,.35), 0 0 34px rgba(52,255,231,.22);
-          border-radius:3px; transition: transform 900ms cubic-bezier(.2,.8,.2,1) 120ms;
-        }
-        .top-title.neon.is-in::after{ transform: translateX(-50%) scaleX(1); }
 
         /* NEW: sentinel has no height; spacing comes from sections */
         .after-about-sentinel{ height: 0; }
 
         @media (prefers-reduced-motion: reduce){
-          .edge, .edge-splash.dock{ animation: none !important; opacity: 0 !important; }
-          .top-title, .top-title.neon::after{ transition:none !important; transform:none !important; opacity:1 !important; }
+          .half.left,.half.right,.splash.dock,.top-title{ animation:none !important; transition:none !important; opacity:1 !important; transform:none !important; }
         }
         @media (max-width: 650px){
+          .splash-title{ font-size: clamp(1.3rem, 6vw, 2rem); gap: 10px; white-space: normal; }
           .topbar{ padding: 10px 4vw; }
         }
       `}</style>
     </main>
   );
 }
+
 
 /* ---------------- Hero with comets + revolving cards ---------------- */
 function HeroCarousel({ visible, items }) {
@@ -303,6 +288,7 @@ function HeroCarousel({ visible, items }) {
   );
 }
 
+
 /* ---------------- About: bounce-in line ---------------- */
 function AboutBounce() {
   const lineRef = useRef(null);
@@ -342,6 +328,7 @@ function AboutBounce() {
     </section>
   );
 }
+
 
 /* ---------------- Mentor typing line (gated) ---------------- */
 function MentorTyping({ armed = false }) {
@@ -403,6 +390,7 @@ function MentorTyping({ armed = false }) {
     </section>
   );
 }
+
 
 /* ---------------- Principles wheel (8 items orbiting) ---------------- */
 function PrinciplesWheel() {
@@ -491,8 +479,8 @@ function PrinciplesWheel() {
         }
 
         .glass{
-          min-width: clamp(190px, 26vw, 10px);
-          max-width: clamp(190px, 28vw, 180px);
+          min-width: clamp(200px, 26vw, 10px);
+          max-width: clamp(210px, 28vw, 190px);
           padding: 12px 14px;
           border-radius: 14px;
           border: 1px solid rgba(122,255,244,.38);
@@ -525,9 +513,9 @@ function PrinciplesWheel() {
         .glass:hover{ transform: translateZ(0) scale(1.02); box-shadow: 0 14px 36px rgba(0,0,0,.34); }
 
         @media (max-width: 650px){
-          .wheel{ --R: 80px; width: calc(var(--R) * 2 + 80px); height: calc(var(--R) * 2 + 100px); }
-          .glass{ min-width: 62vw; max-width: 76vw; }
-          .center{ width: min(86vw, 400px); }
+          .wheel{ --R: 100px; width: calc(var(--R) * 2 + 80px); height: calc(var(--R) * 2 + 120px); }
+          .glass{ min-width: 72vw; max-width: 76vw; }
+          .center{ width: min(86vw, 420px); }
         }
 
         @media (prefers-reduced-motion: reduce){
