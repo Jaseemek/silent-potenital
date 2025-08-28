@@ -56,18 +56,23 @@ export default function Story() {
       </div>
 
       <div className="door-wrap">
-        {order.map((idx, layer) => {
-          const c = cards[idx];
-          const cls = layer === 0 ? "card active" : layer === 1 ? "card next" : "card later";
-          return (
-            <section key={`${c.title}-${idx}`} className={cls} onClick={next}>
-              <h2>{c.title}</h2>
-              <ul className="bullet-list">
-                {c.bullets.map((b, i) => <li key={i}>{b}</li>)}
-              </ul>
-            </section>
-          );
-        })}
+   {order.map((idx, layer) => {
+  // Hide non-active cards on mobile (window check in useEffect or safer env check needed)
+  // For simplicity, example directly uses window.innerWidth
+  if (typeof window !== "undefined" && window.innerWidth < 650 && layer !== 0) return null;
+
+  const c = cards[idx];
+  const cls = layer === 0 ? "card active" : layer === 1 ? "card next" : "card later";
+  return (
+    <section key={`${c.title}-${idx}`} className={cls} onClick={next}>
+      <h2>{c.title}</h2>
+      <ul className="bullet-list">
+        {c.bullets.map((b, i) => <li key={i}>{b}</li>)}
+      </ul>
+    </section>
+  );
+})}
+
       </div>
 
       {/* Optional hidden controls for keyboard users */}
