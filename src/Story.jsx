@@ -50,7 +50,7 @@ export default function Story() {
     <main className="door-main">
       {/* Gentle diagonal comet rain (kept) */}
       <div className="door-comets rain">
-        {Array.from({ length: 12 }).map((_, i) => (
+        {Array.from({ length: 64 }).map((_, i) => (
           <span key={i} className={`css-comet rain-${i+1}`} />
         ))}
       </div>
