@@ -78,11 +78,11 @@ export default function Story() {
         </h1>
       </header>
 
+      {/* About line should appear together with the cards right after title docks */}
+      <AboutBounce armed={showCards} />
+
       {/* Hero with comets and revolving cards (only after title docks) */}
       <HeroCarousel visible={showCards} items={CARDS} />
-
-      {/* About line that bounces in */}
-      <AboutBounce />
 
       {/* Mentor line that types in */}
       <MentorTyping />
@@ -161,19 +161,17 @@ function HeroCarousel({ visible, items }) {
     return () => window.removeEventListener("keydown", onKey);
   }, [visible, total]);
 
-  // Fixed touch handling for mobile responsiveness
   const startX = useRef(0);
   const endX = useRef(0);
-  const onStart = (e) => { startX.current = e.touches[0].clientX; };
-  const onMove  = (e) => { endX.current = e.touches[0].clientX; };
+  const onStart = (e) => { startX.current = e.touches.clientX; };
+  const onMove  = (e) => { endX.current  = e.touches.clientX; };
   const onEnd   = () => {
     const dx = endX.current - startX.current;
     if (Math.abs(dx) > 50) setActive((a) => dx > 0 ? (a - 1 + total) % total : (a + 1) % total);
   };
 
-  // Correct visible cards for mobile
   const order = [active, (active + 1) % total, (active + 2) % total, (active + 3) % total];
-  const visibleOrder = isMobile ? [order[0], order[1]] : order;
+  const visibleOrder = isMobile ? [order, order[1]] : order;
 
   return (
     <section className={heroClass}>
@@ -265,32 +263,30 @@ function HeroCarousel({ visible, items }) {
   );
 }
 
-/* ---------------- About: bounce-in line ---------------- */
-function AboutBounce() {
+/* ---------------- About: reveal on 'armed' (no scroll observer) ---------------- */
+function AboutBounce({ armed = false }) {
   const lineRef = useRef(null);
+
   useEffect(() => {
+    if (!armed) return;
     const el = lineRef.current;
     if (!el) return;
-    const io = new IntersectionObserver(
-      ([en]) => {
-        if (en.isIntersecting) { el.classList.add("is-in"); io.unobserve(el); }
-      },
-      { threshold: 0.25, rootMargin: "0px 0px -12% 0px" }
-    );
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
+    // kick the bounce immediately when armed flips true
+    requestAnimationFrame(() => el.classList.add("is-in"));
+  }, [armed]);
 
   return (
-    <section className="about-wrap">
+    <section className={`about-wrap ${armed ? "" : "pre-armed"}`}>
       <h2 ref={lineRef} className="about-line">
         We chose to call this section <span className="teal">About Yourself</span> instead of the usual “About Us” — because your current journey mirrors the one we’ve already walked through. This is not just our story; it's yours too.
       </h2>
 
       <style>{`
-        .about-wrap{ padding: clamp(28px, 7vh, 72px) 6vw clamp(28px, 8vh, 80px); display:grid; place-items:center; text-align:center; }
+        .about-wrap{ padding: clamp(28px, 7vh, 72px) 6vw clamp(20px, 6vh, 60px); display:grid; place-items:center; text-align:center; }
+        /* Keep fully hidden until armed to prevent initial flash */
+        .about-wrap.pre-armed{ visibility: hidden; height: 0; margin: 0; padding: 0; }
         .about-line{
-          max-width:1100px; font-size:clamp(1.05rem,2.4vw,1.6rem); line-height:1.6; margin:0;
+          max-width:1200px; font-size:clamp(0.9rem,2.1vw,1.1rem); line-height:1.5; margin:0;
           opacity:0; transform: translateY(18px) scale(.98);
         }
         .about-line.is-in{ animation: aboutBounceIn 820ms cubic-bezier(.2,.9,.2,1) forwards; opacity:1; }
@@ -305,7 +301,7 @@ function AboutBounce() {
   );
 }
 
-/* ---------------- Mentor typing line ---------------- */
+/* ---------------- Mentor typing line (unchanged here) ---------------- */
 function MentorTyping() {
   const containerRef = useRef(null);
   const [started, setStarted] = useState(false);
@@ -390,7 +386,6 @@ function PrinciplesWheel() {
           io.unobserve(el);
         }
       },
-      // reveal only when the block is properly in view (so it doesn't overlap early)
       { threshold: 0.4, rootMargin: "0px 0px -18% 0px" }
     );
     io.observe(el);
@@ -450,7 +445,7 @@ function PrinciplesWheel() {
         }
 
         .glass{
-          min-width: clamp(200px, 26vw, 170px);
+          min-width: clamp(200px, 26vw, 10px);
           max-width: clamp(210px, 28vw, 190px);
           padding: 12px 14px;
           border-radius: 14px;
@@ -496,7 +491,6 @@ function PrinciplesWheel() {
     </section>
   );
 }
-
 
 /* ---------------- Hook ---------------- */
 function useIsMobile(bp = 650) {
