@@ -472,14 +472,14 @@ h1, h2, h3 { line-height: 1.15; }
 }
 /* Make comets brighter and slightly longer */
 .css-comet {
-  opacity: 0.30;                       /* was ~0.18 */
+  opacity: 0.45;                       /* was ~0.18 */
   width: 26vw;                         /* longer streaks */
   max-width: 300px;
   background: linear-gradient(90deg,
               rgba(255,255,255,0),
               rgba(18,231,207,0.80),   /* brighter core */
               rgba(255,255,255,0));
-  filter: blur(0.45px);
+  filter: blur(0.65px);
 }
 
 /* On mobile, bump visibility a touch more */
@@ -490,40 +490,57 @@ h1, h2, h3 { line-height: 1.15; }
     max-width: 220px;
   }
 }
+/* MOBILE-FOCUSED FIXES */
 @media (max-width: 650px) {
+  /* Ensure the card frame shows on mobile */
+  .card {
+    /* slightly stronger glass fill so the frame reads over comets */
+    background: rgba(8, 14, 16, 0.28);
+    -webkit-backdrop-filter: blur(10px) saturate(1.06);
+    backdrop-filter: blur(10px) saturate(1.06);
+    border: 1.2px solid rgba(180, 255, 246, 0.42);  /* subtle, not neon */
+    padding: 18px 10px;
+  }
+
+  /* Gentle glow only for the active (front) card */
+  .card.active {
+    border-color: rgba(25, 227, 207, 0.65);
+    box-shadow:
+      0 12px 40px rgba(0,0,0,0.28),          /* depth */
+      0 0 0 1px rgba(25,227,207,0.10) inset, /* thin inner line */
+      0 0 14px rgba(25,227,207,0.18);        /* soft outer glow */
+  }
+
+  /* Heavily suppress back cards so their text isn’t readable */
   .card.next {
     opacity: 0.08;
-    filter: blur(2.2px) saturate(0.8) brightness(0.80);
+    filter: blur(2.2px) saturate(0.8) brightness(0.82);
     background: rgba(8,14,16,0.08);
-    border-color: rgba(200,255,248,0.1);
+    border-color: rgba(180,255,246,0.12);
   }
   .card.later {
     opacity: 0.02;
-    filter: blur(3.1px) saturate(0.7) brightness(0.75);
-    background: rgba(8,14,16,0.04);
-    border-color: rgba(200,255,248,0.06);
+    filter: blur(3.2px) saturate(0.7) brightness(0.78);
+    background: rgba(8,14,16,0.05);
+    border-color: rgba(180,255,246,0.08);
   }
   .card.next::after,
   .card.later::after {
-    content: \"\";
+    content: "";
     position: absolute;
     inset: 0;
     background: radial-gradient(70% 60% at 50% 50%, rgba(0,0,0,0.30), rgba(0,0,0,0.60));
     border-radius: inherit;
     pointer-events: none;
   }
-}
-@media (max-width: 650px) {
-  .card.active {
-    background: rgba(8,14,16,0.25);
-    padding: 18px 7px;
-  }
+
+  /* Readability tuning for bullets on small screens */
   .bullet-list li {
-    font-size: 1.01rem; /* set for optimal mobile reading */
-    padding: 8px 2px;
+    font-size: 1.02rem;
+    line-height: 1.62;
+    color: #f7f8fa;
+    padding: 8px 4px;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
   }
-}
-.bullet-list li {
-  color: #f7f8fa;
-  font-weight: 500;
+  .bullet-list li:last-child { border-bottom: 0; }
 }
