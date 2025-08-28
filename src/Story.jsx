@@ -161,17 +161,19 @@ function HeroCarousel({ visible, items }) {
     return () => window.removeEventListener("keydown", onKey);
   }, [visible, total]);
 
+  // Fixed touch handling for mobile responsiveness
   const startX = useRef(0);
   const endX = useRef(0);
-  const onStart = (e) => { startX.current = e.touches.clientX; };
-  const onMove  = (e) => { endX.current  = e.touches.clientX; };
+  const onStart = (e) => { startX.current = e.touches[0].clientX; };
+  const onMove  = (e) => { endX.current = e.touches[0].clientX; };
   const onEnd   = () => {
     const dx = endX.current - startX.current;
     if (Math.abs(dx) > 50) setActive((a) => dx > 0 ? (a - 1 + total) % total : (a + 1) % total);
   };
 
+  // Correct visible cards for mobile
   const order = [active, (active + 1) % total, (active + 2) % total, (active + 3) % total];
-  const visibleOrder = isMobile ? [order, order[1]] : order;
+  const visibleOrder = isMobile ? [order[0], order[1]] : order;
 
   return (
     <section className={heroClass}>
