@@ -73,13 +73,13 @@ export default function Story() {
       bullets: [
         "Challenges simulate live pressure and track with clear metrics.",
         "Routine system: daily consistency, emotional control, structured planning.",
-        "With risk‑managed strategies, students become traders.",
+        "With risk-managed strategies, students become traders.",
       ],
     },
     {
       title: "The Ninjas",
       bullets: [
-        "Three full‑time traders, anonymous to keep focus on the craft.",
+        "Three full-time traders, anonymous to keep focus on the craft.",
         "Remove ego and noise — master the process that compounds.",
         "Proof over fame: discipline builds real success.",
       ],
@@ -212,15 +212,31 @@ function HeroCarousel({ visible, items }) {
 
   const startX = useRef(0);
   const endX = useRef(0);
-  const onStart = (e) => { startX.current = e.touches.clientX; };
-  const onMove  = (e) => { endX.current  = e.touches.clientX; };
+
+  // SAFELY read touch X coordinate
+  const readTouchX = (e) => {
+    if (!e) return undefined;
+    if (e.touches && e.touches.length) return e.touches[0].clientX;
+    if (e.changedTouches && e.changedTouches.length) return e.changedTouches[0].clientX;
+    return undefined;
+  };
+
+  const onStart = (e) => {
+    const tx = readTouchX(e);
+    if (typeof tx === "number") startX.current = tx;
+  };
+  const onMove  = (e) => {
+    const tx = readTouchX(e);
+    if (typeof tx === "number") endX.current = tx;
+  };
   const onEnd   = () => {
     const dx = endX.current - startX.current;
     if (Math.abs(dx) > 50) setActive((a) => dx > 0 ? (a - 1 + total) % total : (a + 1) % total);
   };
 
   const order = [active, (active + 1) % total, (active + 2) % total, (active + 3) % total];
-  const visibleOrder = isMobile ? [order, order[1]] : order;
+  // FIX: visibleOrder must be numeric indices (no nested arrays)
+  const visibleOrder = isMobile ? [ order[0], order[1] ] : order;
 
   return (
     <section className={heroClass}>
