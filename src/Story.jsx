@@ -46,10 +46,10 @@ export default function Story() {
       ([en]) => {
         if (en.isIntersecting) {
           setPastAbout(true);
-          io.unobserve(el); // one-shot
+          io.unobserve(el); // unobserve after triggered once
         }
       },
-      // So Mentor appears right after About: trigger as soon as sentinel touches viewport
+      // Trigger as soon as sentinel touches viewport so mentor appears immediately after About
       { threshold: 0, rootMargin: "0px 0px -10% 0px" }
     );
     io.observe(el);
@@ -212,8 +212,8 @@ function HeroCarousel({ visible, items }) {
 
   const startX = useRef(0);
   const endX = useRef(0);
-  const onStart = (e) => { startX.current = e.touches.clientX; };
-  const onMove  = (e) => { endX.current  = e.touches.clientX; };
+  const onStart = (e) => { startX.current = e.touches[0].clientX; };
+  const onMove  = (e) => { endX.current  = e.touches[0].clientX; };
   const onEnd   = () => {
     const dx = endX.current - startX.current;
     if (Math.abs(dx) > 50) setActive((a) => dx > 0 ? (a - 1 + total) % total : (a + 1) % total);
@@ -281,7 +281,7 @@ function HeroCarousel({ visible, items }) {
 
         .card{
           position:absolute; inset:0; padding: clamp(16px, 3.5vw, 26px);
-          border-radius: 20px; overflow:auto; color:#e6faff;
+          border-radius: 20px; overflow:auto; color:#eafdfd;
           background: rgba(15,25,35,.72);
           backdrop-filter: blur(14px) saturate(150%); -webkit-backdrop-filter: blur(14px) saturate(150%);
           border: 1px solid rgba(255,255,255,.08);
@@ -320,7 +320,10 @@ function AboutBounce() {
     if (!el) return;
     const io = new IntersectionObserver(
       ([en]) => {
-        if (en.isIntersecting) { el.classList.add("is-in"); io.unobserve(el); }
+        if (en.isIntersecting) {
+          el.classList.add("is-in");
+          io.unobserve(el);
+        }
       },
       { threshold: 0.25, rootMargin: "0px 0px -12% 0px" }
     );
@@ -333,17 +336,40 @@ function AboutBounce() {
         We chose to call this section <span className="teal">About Yourself</span> instead of the usual “About Us” — because your current journey mirrors the one we’ve already walked through. This is not just our story; it's yours too.
       </h2>
       <style>{`
-        .about-wrap{ padding: clamp(28px, 7vh, 72px) 6vw clamp(28px, 8vh, 80px); display:grid; place-items:center; text-align:center; }
-        .about-line{
-          max-width:1100px; font-size:clamp(1.05rem,2.4vw,1.2rem); line-height:1.7; margin:0;
-          opacity:0; transform: translateY(18px) scale(.98);
+        .about-wrap {
+          padding: clamp(28px, 7vh, 72px) 6vw clamp(28px, 8vh, 80px);
+          display: grid;
+          place-items: center;
+          text-align: center;
         }
-        .about-line.is-in{ animation: aboutBounceIn 820ms cubic-bezier(.2,.9,.2,1) forwards; opacity:1; }
-        @keyframes aboutBounceIn{
-          0%{ opacity:0; transform: translateY(18px) scale(.98); }
-          55%{ opacity:1; transform: translateY(-10px) scale(1.02); }
-          75%{ transform: translateY(4px) scale(1.0); }
-          100%{ opacity:1; transform: translateY(0) scale(1); }
+        .about-line {
+          max-width: 1100px;
+          font-size: clamp(1.05rem, 2.4vw, 1.2rem);
+          line-height: 1.7;
+          margin: 0;
+          opacity: 0;
+          transform: translateY(18px) scale(.98);
+        }
+        .about-line.is-in {
+          animation: aboutBounceIn 820ms cubic-bezier(.2, .9, .2, 1) forwards;
+          opacity: 1;
+        }
+        @keyframes aboutBounceIn {
+          0% {
+            opacity: 0;
+            transform: translateY(18px) scale(.98);
+          }
+          55% {
+            opacity: 1;
+            transform: translateY(-10px) scale(1.02);
+          }
+          75% {
+            transform: translateY(4px) scale(1.0);
+          }
+          100% {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+          }
         }
       `}</style>
     </section>
@@ -364,7 +390,10 @@ function MentorTyping({ armed = false }) {
     if (!el) return;
     const io = new IntersectionObserver(
       ([en]) => {
-        if (en.isIntersecting && !started) { setStarted(true); io.unobserve(el); }
+        if (en.isIntersecting && !started) {
+          setStarted(true);
+          io.unobserve(el);
+        }
       },
       { threshold: 0.4, rootMargin: "0px 0px -10% 0px" }
     );
@@ -374,7 +403,8 @@ function MentorTyping({ armed = false }) {
 
   useEffect(() => {
     if (!started) return;
-    let i = 0, t;
+    let i = 0,
+      t;
     const step = () => {
       const chunk = Math.random() < 0.35 ? 2 : 1;
       i = Math.min(i + chunk, full.length);
@@ -386,25 +416,68 @@ function MentorTyping({ armed = false }) {
   }, [started, full]);
 
   return (
-    <section ref={containerRef} className={`mentor-wrap ${armed ? "" : "pre-armed"}`}>
+    <section
+      ref={containerRef}
+      className={`mentor-wrap ${armed ? "" : "pre-armed"}`}
+    >
       <h3 className={`type-line ${started ? "is-in" : ""}`}>
         <span className="typed">{text}</span>
         <span className={`caret ${text.length >= full.length ? "done" : ""}`} />
       </h3>
       <style>{`
-        .mentor-wrap{ padding: clamp(14px, 5vh, 36px) 6vw clamp(36px,10vh,90px); display:grid; place-items:center; text-align:center; }
+        .mentor-wrap {
+          padding: clamp(14px, 5vh, 36px) 6vw clamp(36px, 10vh, 90px);
+          display: grid;
+          place-items: center;
+          text-align: center;
+        }
         /* Hide completely until armed to prevent early appearance */
-        .mentor-wrap.pre-armed{ visibility: hidden; height: 0; margin: 0; padding: 0; }
-        .type-line{
-          margin:0; font-family:'Orbitron','Space Grotesk',Poppins,sans-serif; font-weight:800; letter-spacing:.3px;
-          font-size:clamp(1.02rem,3vw,1.2rem); color:#fff; opacity:0; transform: translateY(6px);
+        .mentor-wrap.pre-armed {
+          visibility: hidden;
+          height: 0;
+          margin: 0;
+          padding: 0;
+        }
+        .type-line {
+          margin: 0;
+          font-family: 'Orbitron', 'Space Grotesk', Poppins, sans-serif;
+          font-weight: 800;
+          letter-spacing: .3px;
+          font-size: clamp(1.02rem, 3vw, 1.2rem);
+          color: #fff;
+          opacity: 0;
+          transform: translateY(6px);
           transition: opacity 420ms ease, transform 420ms ease;
         }
-        .type-line.is-in{ opacity:1; transform: translateY(0); }
-        .typed{ color:#eafdfd; }
-        .caret{ display:inline-block; width:1ch; margin-left:2px; border-right:2px solid #7ff7ea; transform: translateY(2px); animation: blink 900ms steps(1,end) infinite; }
-        .caret.done{ animation:none; border-right-color:transparent; }
-        @keyframes blink{ 0%,49%{opacity:1;} 50%,100%{opacity:0;} }
+        .type-line.is-in {
+          opacity: 1;
+          transform: translateY(0);
+        }
+        .typed {
+          color: #eafdfd;
+        }
+        .caret {
+          display: inline-block;
+          width: 1ch;
+          margin-left: 2px;
+          border-right: 2px solid #7ff7ea;
+          transform: translateY(2px);
+          animation: blink 900ms steps(1, end) infinite;
+        }
+        .caret.done {
+          animation: none;
+          border-right-color: transparent;
+        }
+        @keyframes blink {
+          0%,
+          49% {
+            opacity: 1;
+          }
+          50%,
+          100% {
+            opacity: 0;
+          }
+        }
       `}</style>
     </section>
   );
@@ -414,7 +487,7 @@ function MentorTyping({ armed = false }) {
 function PrinciplesWheel() {
   const wrapRef = useRef(null);
   const [revealed, setRevealed] = useState(false); // controls fade-in
-  const [go, setGo] = useState(false);            // starts rotation after reveal
+  const [go, setGo] = useState(false); // starts rotation after reveal
 
   const PRINCIPLES = [
     "Your Strategy works on backtest, but fails live.",
@@ -424,7 +497,7 @@ function PrinciplesWheel() {
     "You have no clue what returns are realistically possible.",
     "You Panic when trade turns red.",
     "You been Chasing “perfect consistency” which is killing you.",
-    "You got tired of fake traders and fake results online."
+    "You got tired of fake traders and fake results online.",
   ];
 
   useEffect(() => {
@@ -433,7 +506,7 @@ function PrinciplesWheel() {
     const io = new IntersectionObserver(
       ([en]) => {
         if (en.isIntersecting && !revealed) {
-          setRevealed(true);            // fade in
+          setRevealed(true); // fade in
           setTimeout(() => setGo(true), 300); // then start spin
           io.unobserve(el);
         }
@@ -461,20 +534,24 @@ function PrinciplesWheel() {
           If even 2 of these sound familiar, you belong with us.
         </div>
       </div>
+
       <style>{`
-        .wheel-wrap{
+        .wheel-wrap {
           padding: clamp(30px, 10vh, 120px) 6vw clamp(40px, 12vh, 140px);
-          display:grid; place-items:center;
+          display: grid;
+          place-items: center;
           /* hidden until reveal */
-          opacity: 0; transform: translateY(14px) scale(.98);
+          opacity: 0;
+          transform: translateY(14px) scale(0.98);
           transition: opacity 520ms ease, transform 520ms ease;
           pointer-events: none;
         }
-        .wheel-wrap.reveal{
-          opacity: 1; transform: translateY(0) scale(1);
+        .wheel-wrap.reveal {
+          opacity: 1;
+          transform: translateY(0) scale(1);
           pointer-events: auto;
         }
-        .wheel{
+        .wheel {
           --count: 8;
           --R: clamp(120px, 20vw, 210px);
           position: relative;
@@ -482,58 +559,101 @@ function PrinciplesWheel() {
           height: calc(var(--R) * 2 + 180px);
         }
         /* Ring rotates; each card counter-rotates to stay upright */
-        .ring{ position:absolute; inset:0; animation: spin 36s linear infinite; animation-play-state: paused; }
-        .wheel-wrap.go .ring{ animation-play-state: running; }
+        .ring {
+          position: absolute;
+          inset: 0;
+          animation: spin 36s linear infinite;
+          animation-play-state: paused;
+        }
+        .wheel-wrap.go .ring {
+          animation-play-state: running;
+        }
 
-        .orbit-item{
+        .orbit-item {
           --angle: calc(360deg / var(--count) * var(--i));
-          position:absolute; top:50%; left:50%;
+          position: absolute;
+          top: 50%;
+          left: 50%;
           transform: rotate(var(--angle)) translateX(var(--R));
           transform-origin: 0 0;
         }
 
-        .glass{
+        .glass {
           min-width: clamp(200px, 26vw, 10px);
           max-width: clamp(200px, 28vw, 190px);
           padding: 12px 14px;
           border-radius: 14px;
-          border: 1px solid rgba(122,255,244,.38);
-          color:#e6faff;
-          background: rgba(10,18,22,.24);
+          border: 1px solid rgba(122, 255, 244, 0.38);
+          color: #e6faff;
+          background: rgba(10, 18, 22, 0.24);
           backdrop-filter: blur(8px) saturate(1.05);
-          box-shadow: 0 8px 28px rgba(0,0,0,.28);
+          box-shadow: 0 8px 28px rgba(0, 0, 0, 0.28);
           animation: spinRev 36s linear infinite;
           animation-play-state: paused;
           transform-origin: center;
         }
-        .wheel-wrap.go .glass{ animation-play-state: running; }
+        .wheel-wrap.go .glass {
+          animation-play-state: running;
+        }
 
-        .center{
-          position:absolute; top:50%; left:50%; transform: translate(-50%,-50%);
+        .center {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
           width: clamp(240px, 36vw, 340px);
           padding: clamp(10px, 2.2vw, 18px) clamp(14px, 2.6vw, 22px);
-          text-align:center;
-          color:#0a0f14;
+          text-align: center;
+          color: #0a0f14;
           background: #aaf7ee;
           border-radius: 999px;
-          box-shadow: 0 18px 40px rgba(0,0,0,.25);
+          box-shadow: 0 18px 40px rgba(0, 0, 0, 0.25);
           font-weight: 700;
           line-height: 1.35;
         }
 
-        @keyframes spin   { from{ transform: rotate(0deg);}   to{ transform: rotate(360deg);} }
-        @keyframes spinRev{ from{ transform: rotate(0deg);}   to{ transform: rotate(-360deg);} }
-
-        .glass:hover{ transform: translateZ(0) scale(1.02); box-shadow: 0 14px 36px rgba(0,0,0,.34); }
-
-        @media (max-width: 650px){
-          .wheel{ --R: 100px; width: calc(var(--R) * 2 + 80px); height: calc(var(--R) * 2 + 120px); }
-          .glass{ min-width: 72vw; max-width: 76vw; }
-          .center{ width: min(86vw, 420px); }
+        @keyframes spin {
+          from {
+            transform: rotate(0deg);
+          }
+          to {
+            transform: rotate(360deg);
+          }
+        }
+        @keyframes spinRev {
+          from {
+            transform: rotate(0deg);
+          }
+          to {
+            transform: rotate(-360deg);
+          }
         }
 
-        @media (prefers-reduced-motion: reduce){
-          .ring, .glass{ animation: none !important; }
+        .glass:hover {
+          transform: translateZ(0) scale(1.02);
+          box-shadow: 0 14px 36px rgba(0, 0, 0, 0.34);
+        }
+
+        @media (max-width: 650px) {
+          .wheel {
+            --R: 100px;
+            width: calc(var(--R) * 2 + 80px);
+            height: calc(var(--R) * 2 + 120px);
+          }
+          .glass {
+            min-width: 72vw;
+            max-width: 76vw;
+          }
+          .center {
+            width: min(86vw, 420px);
+          }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .ring,
+          .glass {
+            animation: none !important;
+          }
         }
       `}</style>
     </section>
