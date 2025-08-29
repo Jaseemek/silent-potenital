@@ -212,8 +212,8 @@ function HeroCarousel({ visible, items }) {
 
   const startX = useRef(0);
   const endX = useRef(0);
-  const onStart = (e) => { startX.current = e.touches[0].clientX; };
-  const onMove  = (e) => { endX.current  = e.touches[0].clientX; };
+  const onStart = (e) => { startX.current = e.touches.clientX; };
+  const onMove  = (e) => { endX.current  = e.touches.clientX; };
   const onEnd   = () => {
     const dx = endX.current - startX.current;
     if (Math.abs(dx) > 50) setActive((a) => dx > 0 ? (a - 1 + total) % total : (a + 1) % total);
@@ -281,7 +281,7 @@ function HeroCarousel({ visible, items }) {
 
         .card{
           position:absolute; inset:0; padding: clamp(16px, 3.5vw, 26px);
-          border-radius: 20px; overflow:auto; color:#eafdfd;
+          border-radius: 20px; overflow:auto; color:#e6faff;
           background: rgba(15,25,35,.72);
           backdrop-filter: blur(14px) saturate(150%); -webkit-backdrop-filter: blur(14px) saturate(150%);
           border: 1px solid rgba(255,255,255,.08);
@@ -403,8 +403,7 @@ function MentorTyping({ armed = false }) {
 
   useEffect(() => {
     if (!started) return;
-    let i = 0,
-      t;
+    let i = 0, t;
     const step = () => {
       const chunk = Math.random() < 0.35 ? 2 : 1;
       i = Math.min(i + chunk, full.length);
@@ -469,14 +468,8 @@ function MentorTyping({ armed = false }) {
           border-right-color: transparent;
         }
         @keyframes blink {
-          0%,
-          49% {
-            opacity: 1;
-          }
-          50%,
-          100% {
-            opacity: 0;
-          }
+          0%, 49% { opacity: 1; }
+          50%, 100% { opacity: 0; }
         }
       `}</style>
     </section>
@@ -565,9 +558,7 @@ function PrinciplesWheel() {
           animation: spin 36s linear infinite;
           animation-play-state: paused;
         }
-        .wheel-wrap.go .ring {
-          animation-play-state: running;
-        }
+        .wheel-wrap.go .ring { animation-play-state: running; }
 
         .orbit-item {
           --angle: calc(360deg / var(--count) * var(--i));
@@ -583,77 +574,43 @@ function PrinciplesWheel() {
           max-width: clamp(200px, 28vw, 190px);
           padding: 12px 14px;
           border-radius: 14px;
-          border: 1px solid rgba(122, 255, 244, 0.38);
-          color: #e6faff;
-          background: rgba(10, 18, 22, 0.24);
+          border: 1px solid rgba(122,255,244,.38);
+          color:#e6faff;
+          background: rgba(10,18,22,.24);
           backdrop-filter: blur(8px) saturate(1.05);
-          box-shadow: 0 8px 28px rgba(0, 0, 0, 0.28);
+          box-shadow: 0 8px 28px rgba(0,0,0,.28);
           animation: spinRev 36s linear infinite;
           animation-play-state: paused;
           transform-origin: center;
         }
-        .wheel-wrap.go .glass {
-          animation-play-state: running;
-        }
+        .wheel-wrap.go .glass{ animation-play-state: running; }
 
-        .center {
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
+        .center{
+          position:absolute; top:50%; left:50%; transform: translate(-50%,-50%);
           width: clamp(240px, 36vw, 340px);
           padding: clamp(10px, 2.2vw, 18px) clamp(14px, 2.6vw, 22px);
-          text-align: center;
-          color: #0a0f14;
+          text-align:center;
+          color:#0a0f14;
           background: #aaf7ee;
           border-radius: 999px;
-          box-shadow: 0 18px 40px rgba(0, 0, 0, 0.25);
+          box-shadow: 0 18px 40px rgba(0,0,0,.25);
           font-weight: 700;
           line-height: 1.35;
         }
 
-        @keyframes spin {
-          from {
-            transform: rotate(0deg);
-          }
-          to {
-            transform: rotate(360deg);
-          }
-        }
-        @keyframes spinRev {
-          from {
-            transform: rotate(0deg);
-          }
-          to {
-            transform: rotate(-360deg);
-          }
+        @keyframes spin   { from{ transform: rotate(0deg);}   to{ transform: rotate(360deg);} }
+        @keyframes spinRev{ from{ transform: rotate(0deg);}   to{ transform: rotate(-360deg);} }
+
+        .glass:hover{ transform: translateZ(0) scale(1.02); box-shadow: 0 14px 36px rgba(0,0,0,.34); }
+
+        @media (max-width: 650px){
+          .wheel{ --R: 100px; width: calc(var(--R) * 2 + 80px); height: calc(var(--R) * 2 + 120px); }
+          .glass{ min-width: 72vw; max-width: 76vw; }
+          .center{ width: min(86vw, 420px); }
         }
 
-        .glass:hover {
-          transform: translateZ(0) scale(1.02);
-          box-shadow: 0 14px 36px rgba(0, 0, 0, 0.34);
-        }
-
-        @media (max-width: 650px) {
-          .wheel {
-            --R: 100px;
-            width: calc(var(--R) * 2 + 80px);
-            height: calc(var(--R) * 2 + 120px);
-          }
-          .glass {
-            min-width: 72vw;
-            max-width: 76vw;
-          }
-          .center {
-            width: min(86vw, 420px);
-          }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-          .ring,
-          .glass {
-            animation: none !important;
-          }
+        @media (prefers-reduced-motion: reduce){
+          .ring, .glass{ animation: none !important; }
         }
       `}</style>
     </section>
