@@ -1,14 +1,29 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 
 export default function Story() {
+  // Force page to start at top on route entry
+  useLayoutEffect(() => {
+    if (typeof window !== "undefined") {
+      if ("scrollRestoration" in window.history) {
+        window.history.scrollRestoration = "manual";
+      }
+      window.scrollTo(0, 0);
+    }
+    return () => {
+      if (typeof window !== "undefined" && "scrollRestoration" in window.history) {
+        window.history.scrollRestoration = "auto";
+      }
+    };
+  }, []);
+
   // phases: halves fly-in center -> dock to top -> then cards fade in
   const [dock, setDock] = useState(false);
   const [showSplash, setShowSplash] = useState(true);
   const [showCards, setShowCards] = useState(false); // cards appear only after title goes up
 
-  // NEW: sentinel and flag to gate Mentor (after About)
-  const afterAboutRef = useRef(null);                 // NEW
-  const [pastAbout, setPastAbout] = useState(false);  // NEW
+  // sentinel and flag to gate Mentor (after About)
+  const afterAboutRef = useRef(null);
+  const [pastAbout, setPastAbout] = useState(false);
 
   useEffect(() => {
     // Timing: heading plays, then docks, then cards appear
@@ -23,15 +38,19 @@ export default function Story() {
     };
   }, []);
 
-  // NEW: Observe the sentinel after About; arm mentor only after this is in view
+  // Observe the sentinel after About; arm mentor only after this is in view
   useEffect(() => {
     const el = afterAboutRef.current;
     if (!el) return;
     const io = new IntersectionObserver(
       ([en]) => {
-        if (en.isIntersecting) { setPastAbout(true); io.unobserve(el); }
+        if (en.isIntersecting) {
+          setPastAbout(true);
+          io.unobserve(el); // one-shot
+        }
       },
-      { threshold: 0.25, rootMargin: "0px 0px -55% 0px" }
+      // So Mentor appears right after About: trigger as soon as sentinel touches viewport
+      { threshold: 0, rootMargin: "0px 0px -10% 0px" }
     );
     io.observe(el);
     return () => io.disconnect();
@@ -78,17 +97,15 @@ export default function Story() {
 
   return (
     <main className="story-root">
-      {/* Center splash that plays once on load */}
+      {/* TOP-ONLY split halves that play once on load (no center title) */}
       {showSplash && (
-        <div className={`splash ${dock ? "dock" : ""}`}>
-          <h1 className="splash-title">
-            <span className="half left">Silent&nbsp;Equity&nbsp;Story&nbsp;—</span>
-            <span className="half right">“Every&nbsp;Traders&nbsp;Unspoken&nbsp;Life”</span>
-          </h1>
+        <div className={`edge-splash ${dock ? "dock" : ""}`}>
+          <span className="edge half left">Silent&nbsp;Equity&nbsp;Story&nbsp;—</span>
+          <span className="edge half right">“Every&nbsp;Traders&nbsp;Unspoken&nbsp;Life”</span>
         </div>
       )}
 
-      {/* Docked (sticky) header that fades in while splash lifts */}
+      {/* Sticky header that fades in while splash fades out */}
       <header className="topbar">
         <h1 className={`top-title ${dock ? "is-in" : ""}`}>
           <span>Silent Equity Story — </span>
@@ -102,13 +119,13 @@ export default function Story() {
       {/* About line that bounces in */}
       <AboutBounce />
 
-      {/* NEW: sentinel placed right after About to gate the mentor line */}
+      {/* sentinel placed right after About to gate the mentor line */}
       <div ref={afterAboutRef} className="after-about-sentinel" aria-hidden="true" />
 
       {/* Mentor line that types in (now gated) */}
       <MentorTyping armed={pastAbout} />
 
-      {/* NEW: Revolving wheel with 8 principles and center circle */}
+      {/* Revolving wheel with 8 principles and center circle */}
       <PrinciplesWheel />
 
       {/* Base styles */}
@@ -121,22 +138,31 @@ export default function Story() {
         }
         .story-root{ min-height: 200vh; background: var(--bg); color: var(--fg); }
 
-        /* Splash split heading */
-        .splash{ position: fixed; inset: 0; display: grid; place-items: center; pointer-events: none; z-index: 50; }
-        .splash-title{
-          margin: 0; font-family: var(--heading-font); font-weight: 800;
-          font-size: clamp(1.5rem, 5vw, 3rem); line-height: 1.15; letter-spacing: .3px;
-          white-space: nowrap; text-align: center; display: inline-flex; gap: clamp(8px, 1.4vw, 18px);
-          filter: drop-shadow(0 8px 24px rgba(0,0,0,.35));
+        /* edge-to-top splash (title halves from left/right at top) */
+        .edge-splash{ position: fixed; inset: 0; pointer-events: none; z-index: 50; }
+        .edge{
+          position: fixed; top: 14px; /* aligns with header padding */
+          font-family: var(--heading-font); font-weight: 800;
+          font-size: clamp(1.1rem, 3.2vw, 2rem); letter-spacing: .3px;
+          white-space: nowrap; opacity: 0;
+          text-shadow: 0 8px 24px rgba(0,0,0,.25);
         }
-        .half{ display:inline-block; opacity:0; will-change: transform, opacity; }
-        .half.left{  animation: slideInLeft 950ms cubic-bezier(.2,.8,.2,1) forwards; }
-        .half.right{ animation: slideInRight 950ms cubic-bezier(.2,.8,.2,1) forwards; animation-delay: 120ms; }
-        .teal, .half.right{ color: var(--teal); text-shadow: 0 0 10px rgba(18,231,207,.45); }
-        @keyframes slideInLeft { 0%{opacity:0; transform: translateX(-12vw) scale(.96) ; filter: blur(2px);} 60%{opacity:1; transform: translateX(2vw)  scale(1.02);} 100%{opacity:1; transform: translateX(0) scale(1);} }
-        @keyframes slideInRight{ 0%{opacity:0; transform: translateX(12vw)  scale(.96) ; filter: blur(2px);} 60%{opacity:1; transform: translateX(-2vw) scale(1.02);} 100%{opacity:1; transform: translateX(0) scale(1);} }
-        .splash.dock{ animation: liftSplash 1000ms ease forwards; }
-        @keyframes liftSplash{ 0%{ transform:translateY(0); opacity:1; } 100%{ transform:translateY(-22vh); opacity:0; } }
+        .edge.half.left{ left: 6vw; transform: translateX(-120%); animation: sweepInLeft 950ms cubic-bezier(.2,.8,.2,1) forwards; }
+        .edge.half.right{ right: 6vw; transform: translateX(120%); color: var(--teal);
+          text-shadow: 0 0 12px rgba(18,231,207,.45);
+          animation: sweepInRight 950ms cubic-bezier(.2,.8,.2,1) forwards; animation-delay: 120ms; }
+        .edge-splash.dock{ animation: fadeEdge 800ms ease 550ms forwards; }
+        @keyframes sweepInLeft{
+          0%{ opacity:0; transform: translateX(-120%) scale(.98); filter: blur(2px); }
+          60%{ opacity:1; transform: translateX(6%)   scale(1.02); filter: blur(0); }
+          100%{ opacity:1; transform: translateX(0)   scale(1); }
+        }
+        @keyframes sweepInRight{
+          0%{ opacity:0; transform: translateX(120%)  scale(.98); filter: blur(2px); }
+          60%{ opacity:1; transform: translateX(-6%)  scale(1.02); filter: blur(0); }
+          100%{ opacity:1; transform: translateX(0)   scale(1); }
+        }
+        @keyframes fadeEdge{ to{ opacity:0; } }
 
         /* Top sticky title */
         .topbar{ position: sticky; top: 0; z-index: 10; display:grid; place-items:center; padding: 14px 6vw;
@@ -146,21 +172,19 @@ export default function Story() {
           transition: opacity 680ms ease, transform 680ms ease; }
         .top-title.is-in{ opacity:1; transform: translateY(0); }
 
-        /* NEW: sentinel has no height; spacing comes from sections */
-        .after-about-sentinel{ height: 0; }
+        /* Ensure sentinel can intersect right after About */
+        .after-about-sentinel{ height: 1px; width: 100%; }
 
         @media (prefers-reduced-motion: reduce){
-          .half.left,.half.right,.splash.dock,.top-title{ animation:none !important; transition:none !important; opacity:1 !important; transform:none !important; }
+          .edge, .edge-splash.dock, .top-title{ animation:none !important; transition:none !important; opacity:1 !important; transform:none !important; }
         }
         @media (max-width: 650px){
-          .splash-title{ font-size: clamp(1.3rem, 6vw, 2rem); gap: 10px; white-space: normal; }
           .topbar{ padding: 10px 4vw; }
         }
       `}</style>
     </main>
   );
 }
-
 
 /* ---------------- Hero with comets + revolving cards ---------------- */
 function HeroCarousel({ visible, items }) {
@@ -288,7 +312,6 @@ function HeroCarousel({ visible, items }) {
   );
 }
 
-
 /* ---------------- About: bounce-in line ---------------- */
 function AboutBounce() {
   const lineRef = useRef(null);
@@ -304,17 +327,15 @@ function AboutBounce() {
     io.observe(el);
     return () => io.disconnect();
   }, []);
-
   return (
     <section className="about-wrap">
       <h2 ref={lineRef} className="about-line">
         We chose to call this section <span className="teal">About Yourself</span> instead of the usual “About Us” — because your current journey mirrors the one we’ve already walked through. This is not just our story; it's yours too.
       </h2>
-
       <style>{`
         .about-wrap{ padding: clamp(28px, 7vh, 72px) 6vw clamp(28px, 8vh, 80px); display:grid; place-items:center; text-align:center; }
         .about-line{
-          max-width:1100px; font-size:clamp(1.05rem,2.4vw,1.6rem); line-height:1.6; margin:0;
+          max-width:1100px; font-size:clamp(1.05rem,2.4vw,1.2rem); line-height:1.7; margin:0;
           opacity:0; transform: translateY(18px) scale(.98);
         }
         .about-line.is-in{ animation: aboutBounceIn 820ms cubic-bezier(.2,.9,.2,1) forwards; opacity:1; }
@@ -328,7 +349,6 @@ function AboutBounce() {
     </section>
   );
 }
-
 
 /* ---------------- Mentor typing line (gated) ---------------- */
 function MentorTyping({ armed = false }) {
@@ -371,14 +391,13 @@ function MentorTyping({ armed = false }) {
         <span className="typed">{text}</span>
         <span className={`caret ${text.length >= full.length ? "done" : ""}`} />
       </h3>
-
       <style>{`
         .mentor-wrap{ padding: clamp(14px, 5vh, 36px) 6vw clamp(36px,10vh,90px); display:grid; place-items:center; text-align:center; }
         /* Hide completely until armed to prevent early appearance */
         .mentor-wrap.pre-armed{ visibility: hidden; height: 0; margin: 0; padding: 0; }
         .type-line{
           margin:0; font-family:'Orbitron','Space Grotesk',Poppins,sans-serif; font-weight:800; letter-spacing:.3px;
-          font-size:clamp(1.02rem,3vw,1.5rem); color:#fff; opacity:0; transform: translateY(6px);
+          font-size:clamp(1.02rem,3vw,1.2rem); color:#fff; opacity:0; transform: translateY(6px);
           transition: opacity 420ms ease, transform 420ms ease;
         }
         .type-line.is-in{ opacity:1; transform: translateY(0); }
@@ -390,7 +409,6 @@ function MentorTyping({ armed = false }) {
     </section>
   );
 }
-
 
 /* ---------------- Principles wheel (8 items orbiting) ---------------- */
 function PrinciplesWheel() {
@@ -439,12 +457,10 @@ function PrinciplesWheel() {
             </div>
           ))}
         </div>
-
         <div className="center">
           If even 2 of these sound familiar, you belong with us.
         </div>
       </div>
-
       <style>{`
         .wheel-wrap{
           padding: clamp(30px, 10vh, 120px) 6vw clamp(40px, 12vh, 140px);
@@ -458,15 +474,13 @@ function PrinciplesWheel() {
           opacity: 1; transform: translateY(0) scale(1);
           pointer-events: auto;
         }
-
         .wheel{
           --count: 8;
-          --R: clamp(120px, 20vw, 290px);
+          --R: clamp(120px, 20vw, 210px);
           position: relative;
           width: calc(var(--R) * 2 + 180px);
           height: calc(var(--R) * 2 + 180px);
         }
-
         /* Ring rotates; each card counter-rotates to stay upright */
         .ring{ position:absolute; inset:0; animation: spin 36s linear infinite; animation-play-state: paused; }
         .wheel-wrap.go .ring{ animation-play-state: running; }
@@ -480,7 +494,7 @@ function PrinciplesWheel() {
 
         .glass{
           min-width: clamp(200px, 26vw, 10px);
-          max-width: clamp(210px, 28vw, 190px);
+          max-width: clamp(200px, 28vw, 190px);
           padding: 12px 14px;
           border-radius: 14px;
           border: 1px solid rgba(122,255,244,.38);
