@@ -33,11 +33,18 @@ export default function Initiatives() {
   // Trigger redraw of connectors when layout changes (unchanged)
   const [drawTick, setDrawTick] = useState(0);
 
+  // === NEW CODE FOR SCROLL TO TOP ===
+  // This useEffect hook runs once when the component mounts to reset the scroll position.
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+  // ===================================
+
   // Master scroll reveal effect
   useEffect(() => {
     // This array defines the reveal sequence for all elements on the page
     const elementsToReveal = [
-      { element: heroLinesRef.current, threshold: 0.8 },
+      // Removed hero section elements from this list
       { element: tagRef.current, threshold: 0.3 },
       { element: contentRef.current, threshold: 0.3 },
       { element: flowHeadingRef.current, threshold: 0.4 },
@@ -208,15 +215,16 @@ export default function Initiatives() {
   return (
     <main className="initiatives-root">
       <header className="initiatives-hero">
-        {/* Decorative 3D-style dollar symbols */}
-        <span className="dollar dollar-right" aria-hidden="true">$</span>
-        <span className="dollar dollar-left" aria-hidden="true">$</span>
-        <span className="dollar dollar-far-1" aria-hidden="true">$</span>
-        <span className="dollar dollar-far-2" aria-hidden="true">$</span>
-        <span className="dollar dollar-far-3" aria-hidden="true">$</span>
+        {/* Decorative 3D-style dollar symbols with 'show' class for immediate animation */}
+        <span className="dollar dollar-right show" aria-hidden="true">$</span>
+        <span className="dollar dollar-left show" aria-hidden="true">$</span>
+        <span className="dollar dollar-far-1 show" aria-hidden="true">$</span>
+        <span className="dollar dollar-far-2 show" aria-hidden="true">$</span>
+        <span className="dollar dollar-far-3 show" aria-hidden="true">$</span>
 
         <div className="container">
-          <h1 ref={heroLinesRef} className="hero-title fade-stage">
+          {/* Hero title with 'show' class for immediate animation */}
+          <h1 ref={heroLinesRef} className="hero-title show">
             <span className="reveal">
               <span className="line">Our</span>
               <span className="line">Initiatives</span>
@@ -328,7 +336,7 @@ export default function Initiatives() {
         <article ref={progARef} className="prog-card fade-stage">
           <div className="prog-head">
             <h3>Code of Consistency</h3>
-            <span className="price">$249</span> {/* Price retained */}
+            <span className="price">$249</span>
           </div>
           <ul className="prog-points">
             <li>Full access to the Silent Equity program, including pre-recorded classes and comprehensive study materials.</li>
@@ -341,7 +349,7 @@ export default function Initiatives() {
         <article ref={progBRef} className="prog-card fade-stage">
           <div className="prog-head">
             <h3>The Guaranteed Edge</h3>
-            <span className="price">$149</span> {/* Price retained */}
+            <span className="price">$149</span>
           </div>
           <ul className="prog-points">
             <li>Mathematically Structured: Based on a robust mathematical model using an Excel framework—no predictions or complex analysis required.</li>
@@ -428,7 +436,9 @@ export default function Initiatives() {
 
         .writeup{ padding: clamp(22px, 6vh, 60px) 0 clamp(40px, 10vh, 90px); }
         .fade-stage{ opacity:0; transform: translateY(10px); transition: opacity .5s ease, transform .5s ease; }
-        .fade-stage.show{ opacity:1; transform: translateY(0); }
+        /* Add a 'show' class to override fade-stage opacity and transform */
+        .show.fade-stage { opacity: 1 !important; transform: translateY(0) !important; }
+
         .tagline{ margin:0; font-family:'Orbitron','Space Grotesk',Poppins,system-ui,sans-serif; font-weight:900; letter-spacing:.3px; font-size: clamp(1rem, 2.6vw, 1.25rem); color: var(--fg); background: linear-gradient(90deg, rgba(18,231,207,.18), rgba(127,247,234,.08) 60%, transparent); border:1px solid rgba(127,247,234,.28); padding:12px 14px; border-radius:12px; box-shadow:0 18px 36px rgba(0,0,0,.36); }
         .tagline .muted{ color: var(--muted); }
         .bodycopy{ margin:16px 0 0; color: var(--muted); line-height:1.8; font-size: clamp(.95rem, 2.2vw, 1.02rem); background: linear-gradient(180deg, rgba(255,255,255,.02), transparent 40%); padding: 8px 2px 0; }
