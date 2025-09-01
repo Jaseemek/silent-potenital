@@ -414,6 +414,15 @@ export default function Initiatives() {
             radial-gradient(70vw 70vh at 18% 72%, rgba(26,200,180,.06), transparent 58%),
             #0e171d;
         }
+        /* Mobile adjustments for dollars */
+        @media (max-width: 768px) {
+          .dollar {
+            display: none; /* Hide dollars on smaller screens to reduce clutter */
+          }
+          .initiatives-hero {
+            padding: clamp(20px, 12vh, 100px) 6vw clamp(20px, 8vh, 60px);
+          }
+        }
 
         /* Dollars (unchanged) */
         .dollar{ position:absolute; inset:auto; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, 'Space Grotesk', sans-serif; font-weight:900; letter-spacing:.5px; color:transparent; -webkit-text-stroke:1px rgba(18,231,207,.35); text-shadow:0 0 18px rgba(18,231,207,.15), 0 8px 28px rgba(0,0,0,.45); background: radial-gradient(120% 120% at 20% 20%, rgba(63,63,63,.9), transparent 35%), linear-gradient(135deg, var(--usd-base), var(--usd-mid) 45%, var(--usd-dark) 90%); -webkit-background-clip:text; background-clip:text; pointer-events:none; user-select:none; filter: drop-shadow(0 8px 22px rgba(0,0,0,.45)); opacity:0; transform:translateY(10px) scale(.94) rotate(var(--rot,0deg)); animation:dollarIn .8s cubic-bezier(.2,.9,.2,1) forwards; }
@@ -435,6 +444,17 @@ export default function Initiatives() {
         @keyframes sweep{0%{transform:translateX(-120%);opacity:0}40%{opacity:.9}100%{transform:translateX(120%);opacity:0}}
 
         .writeup{ padding: clamp(22px, 6vh, 60px) 0 clamp(40px, 10vh, 90px); }
+        /* Mobile adjustments for writeup */
+        @media (max-width: 768px) {
+          .writeup {
+            padding: 40px 0;
+          }
+          .tagline {
+            font-size: 1rem;
+            padding: 10px 12px;
+            text-align: center;
+          }
+        }
         .fade-stage{ opacity:0; transform: translateY(10px); transition: opacity .5s ease, transform .5s ease; }
         /* Add a 'show' class to override fade-stage opacity and transform */
         .show.fade-stage { opacity: 1 !important; transform: translateY(0) !important; }
@@ -442,7 +462,12 @@ export default function Initiatives() {
         .tagline{ margin:0; font-family:'Orbitron','Space Grotesk',Poppins,system-ui,sans-serif; font-weight:900; letter-spacing:.3px; font-size: clamp(1rem, 2.6vw, 1.25rem); color: var(--fg); background: linear-gradient(90deg, rgba(18,231,207,.18), rgba(127,247,234,.08) 60%, transparent); border:1px solid rgba(127,247,234,.28); padding:12px 14px; border-radius:12px; box-shadow:0 18px 36px rgba(0,0,0,.36); }
         .tagline .muted{ color: var(--muted); }
         .bodycopy{ margin:16px 0 0; color: var(--muted); line-height:1.8; font-size: clamp(.95rem, 2.2vw, 1.02rem); background: linear-gradient(180deg, rgba(255,255,255,.02), transparent 40%); padding: 8px 2px 0; }
-
+        @media (max-width: 768px) {
+          .bodycopy {
+            font-size: .9rem;
+            text-align: center;
+          }
+        }
         /* Flow heading with extra top spacing */
         .flow-heading{ padding: clamp(18px, 4vh, 26px) 0 8px; }
         .subhead{
@@ -457,6 +482,18 @@ export default function Initiatives() {
           background: linear-gradient(90deg, rgba(127,247,234,.38), rgba(127,247,234,.12) 60%, transparent);
           box-shadow: 0 8px 24px rgba(0,0,0,.35);
         }
+        @media (max-width: 768px) {
+          .subhead {
+            text-align: center;
+            width: 100%;
+          }
+          .subhead-line::after {
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+          }
+        }
+
 
         /* --- THE FINAL FIX --- */
         /* The conflicting display:grid and grid-template-columns properties have been removed from this rule. */
@@ -503,6 +540,28 @@ export default function Initiatives() {
 
         .flow-row.right .row-content{ margin-left: 2px; }
         .flow-row.left  .row-content{ margin-left: 2px; }
+        
+        /* Mobile adjustments for flow */
+        @media (max-width: 768px) {
+          .flow-steps {
+            padding-left: 10vw;
+            padding-right: 10vw;
+            gap: 20px;
+          }
+          .flow-row {
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            min-width: 200px;
+            padding: 0 10px;
+          }
+          .flow-row.right .row-content, .flow-row.left .row-content {
+            margin-left: 0;
+          }
+          .flow-row .badge {
+            margin-bottom: 8px;
+          }
+        }
 
         /* Programs section */
         .programs{ padding: clamp(16px, 6vh, 60px) 0 clamp(36px, 10vh, 90px); display:grid; gap:18px; /* Re-added gap */ }
@@ -526,11 +585,20 @@ export default function Initiatives() {
         
         /* New section styling */
         .new-section{ padding: clamp(22px, 6vh, 60px) 0 clamp(40px, 10vh, 90px); }
-
+        @media (max-width: 768px) {
+          .new-section .bodycopy {
+            text-align: center;
+          }
+        }
         .addons-section{
             padding-top: 0;
             display:grid; gap:20px;
-            @media (min-width: 768px){ grid-template-columns: 1fr 1fr; }
+        }
+        /* Desktop grid layout for addons */
+        @media (min-width: 768px){ 
+          .addons-section{
+            grid-template-columns: 1fr 1fr;
+          }
         }
         .addons-section .subhead{ margin-bottom: 24px; width:100%; }
         .addons-section .subhead.no-line::after{ content: none; }
