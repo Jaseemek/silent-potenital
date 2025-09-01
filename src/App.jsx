@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef } from "react";
 import { Routes, Route, Link } from "react-router-dom";
 import Story from "./Story";
+import Initiatives from "./Services";
 
 // ------------ ForexTicker ------------
 function ForexTicker() {
@@ -55,21 +56,12 @@ function FluidCanvas() {
       off.height = H;
     }
 
-    const cfg = {
-      radius: 0.36,
-      width: 0.08,
-      wobbleAmp: 0.018,
-      wobbleFreq: 2.2,
-      speed: 0.22,
-      hue: 172,
-    };
+    const cfg = { radius: 0.36, width: 0.08, wobbleAmp: 0.018, wobbleFreq: 2.2, speed: 0.22, hue: 172 };
 
     function drawRibbon(time) {
-      const W = canvas.width,
-        H = canvas.height;
+      const W = canvas.width, H = canvas.height;
       const m = Math.min(W, H);
-      const cx = W * 0.5,
-        cy = H * 0.5;
+      const cx = W * 0.5, cy = H * 0.5;
       const R = cfg.radius * m;
       const half = (cfg.width * m) * 0.5;
 
@@ -86,8 +78,7 @@ function FluidCanvas() {
           const rr = R + sign * (half + wob);
           const x = cx + rr * Math.cos(a);
           const y = cy + rr * Math.sin(a) * 0.65;
-          if (i === 0) octx.moveTo(x, y);
-          else octx.lineTo(x, y);
+          if (i === 0) octx.moveTo(x, y); else octx.lineTo(x, y);
         }
       }
 
@@ -98,8 +89,7 @@ function FluidCanvas() {
 
       octx.save();
       octx.fillStyle = bodyGrad;
-      edgePath(+1);
-      edgePath(-1);
+      edgePath(+1); edgePath(-1);
       octx.closePath();
       octx.fill();
 
@@ -129,8 +119,7 @@ function FluidCanvas() {
           const rr = R + ripple;
           const x = cx + rr * Math.cos(a);
           const y = cy + rr * Math.sin(a) * 0.65;
-          if (i === 0) octx.moveTo(x, y);
-          else octx.lineTo(x, y);
+          if (i === 0) octx.moveTo(x, y); else octx.lineTo(x, y);
         }
         octx.stroke();
         octx.globalCompositeOperation = "source-over";
@@ -151,20 +140,14 @@ function FluidCanvas() {
       ctx.globalCompositeOperation = "source-over";
     }
 
-    function loop(ts) {
-      drawRibbon(ts * 0.001);
-      raf = requestAnimationFrame(loop);
-    }
+    function loop(ts) { drawRibbon(ts * 0.001); raf = requestAnimationFrame(loop); }
 
     resize();
     const ro = new ResizeObserver(resize);
     ro.observe(parent);
     raf = requestAnimationFrame(loop);
 
-    return () => {
-      cancelAnimationFrame(raf);
-      ro.disconnect();
-    };
+    return () => { cancelAnimationFrame(raf); ro.disconnect(); };
   }, []);
 
   return <canvas className="hero-canvas" ref={ref} />;
@@ -272,6 +255,51 @@ function AboutYourself() {
   );
 }
 
+// ------------ CommunityPrograms (new, same look as About) ------------
+function CommunityPrograms() {
+  return (
+    <section className="about section programs">
+      <div className="container" style={{ position: "relative", zIndex: 1 }}>
+        <h2>Community Programs</h2>
+        <p className="subtle" style={{ marginTop: 10 }}>
+          At Silent Equity, our commitment is to empower traders through disciplined learning and proven strategies.
+          Our Community Programs are designed to guide members across all skill levels, from beginners forging their path
+          to advanced traders seeking the ultimate edge. By joining our programs, you become part of a focused, supportive
+          community dedicated to mastery, resilience, and consistent success.
+        </p>
+
+        <h3 style={{ marginTop: 16 }}>Initiatives</h3>
+        <ul className="init-list">
+          <li>
+            <strong>Code of Consistency:</strong> A structured course taking traders from beginner to professional with
+            disciplined habits and a systematic trading approach.
+          </li>
+          <li>
+            <strong>The Guaranteed Edge:</strong> An advanced program teaching a mathematically proven hedging method
+            for high profitability and consistent returns.
+          </li>
+        </ul>
+
+        <div className="about-cta-wrap" style={{ marginTop: 12 }}>
+          <Link className="readmore-cta" to="/initiatives" aria-label="Join the initiatives">
+            Join the initiatives
+          </Link>
+        </div>
+      </div>
+
+      {/* CSS-only moving comets (reuse) */}
+      <div className="css-comet c1" />
+      <div className="css-comet c2" />
+      <div className="css-comet c3" />
+      <div className="css-comet c4" />
+      <div className="css-comet c5" />
+
+      {/* JS random stars layered above comets */}
+      <ShootingStars />
+    </section>
+  );
+}
+
 // ------------ Reviews ------------
 function Reviews() {
   const data = [
@@ -302,7 +330,7 @@ function Reviews() {
 // ------------ LeadForm ------------
 function LeadForm() {
   return (
-    <section className="section leadform-section">
+    <section id="lead" className="section leadform-section">
       <div className="container">
         <h2>Activate Your Silent Potential</h2>
         <form className="form" onSubmit={(e) => { e.preventDefault(); alert("Details submitted!"); }}>
@@ -351,7 +379,7 @@ function FloatingCTA() {
           <svg width="16" height="14" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
             <path d="M20.317 4.369A19.791 19.791 0 0 0 16.556 3c-.2.36-.427.85-.586 1.232a17.185 17.185 0 0 0-7.94 0A8.6 8.6 0 0 0 7.444 3a19.79 19.79 0 0 0-3.761 1.369C1.612 8.053.94 11.62 1.107 15.152a19.96 19.96 0 0 0 6.075 3.11c.469-.64.888-1.322 1.247-2.04a12.9 12.9 0 0 1-1.97-.76c.165-.12.326-.245.482-.374a12.94 12.94 0 0 0 9.118 0c.157.13.318.255.482.374-.636.29-1.305.54-1.97.76.359.718.777 1.4 1.247 2.04a19.96 19.96 0 0 0 6.074-3.11c.22-4.34-.534-7.888-3.025-10.783ZM9.75 13.2c-.84 0-1.523-.76-1.523-1.693 0-.933.674-1.693 1.523-1.693.86 0 1.533.76 1.523 1.693 0 .933-.664 1.693-1.523 1.693Zm4.5 0c-.84 0-1.523-.76-1.523-1.693 0-.933.674-1.693 1.523-1.693.86 0 1.533.76 1.523 1.693 0 .933-.664 1.693-1.523 1.693Z" />
           </svg>
-          <span>JOIN DISCORD — $12</span>
+          <span>JOIN DISCORD—$13</span>
         </span>
       </button>
     </div>
@@ -365,6 +393,7 @@ function Home() {
       <ForexTicker />
       <Hero />
       <AboutYourself />
+      <CommunityPrograms />
       <Reviews />
       <LeadForm />
       <FloatingCTA />
@@ -377,6 +406,7 @@ export default function App() {
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/story" element={<Story />} />
+      <Route path="initiatives" element={<Initiatives />} /> {/* route to separate Initiatives.jsx */}
     </Routes>
   );
 }

@@ -269,7 +269,7 @@ h1, h2, h3 { line-height: 1.15; }
   gap: 8px;
   padding: 4px 6px;
   color: #EAF7F5;
-  font-weight: 700;
+  font-weight: 900;
   letter-spacing: 0.3px;
   text-decoration: none;
   position: relative;
@@ -395,3 +395,141 @@ h1, h2, h3 { line-height: 1.15; }
 @media (prefers-reduced-motion: reduce){
   .half.left,.half.right,.splash.dock,.top-title,.bullet{ animation:none !important; transition:none !important; opacity:1 !important; transform:none !important; clip-path: none !important; }
 } /* accessibility */ 
+/* Section container shares the same base as .about; this adds darker tone */
+.section.programs{
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(180deg, rgba(6,12,16,.65), rgba(10,18,22,.85));
+}
+
+/* Typography */
+.section.programs h2{
+  margin: 0 0 .6rem;
+  font-family: var(--heading-font, 'Orbitron','Space Grotesk',Poppins,system-ui,sans-serif);
+  font-weight: 800;
+  font-size: clamp(1.2rem, 3.2vw, 1.8rem);
+  letter-spacing: .3px;
+  color: var(--fg, #eafdfd);
+  text-shadow: 0 0 18px rgba(0,255,240,.12);
+}
+
+.section.programs h3{
+  margin: .6rem 0 .4rem;
+  font-family: var(--heading-font, 'Orbitron','Space Grotesk',Poppins,system-ui,sans-serif);
+  font-weight: 800;
+  font-size: clamp(1.05rem, 2.6vw, 1.35rem);
+  color: #9fffea;
+}
+
+.section.programs .subtle{
+  color: #c9f3ee;
+  opacity: .96;
+  font-size: clamp(.96rem, 1.6vw, 1.08rem);
+  line-height: 1.7;
+}
+
+/* Initiatives list */
+.init-list{
+  margin: .4rem 0 0;
+  padding-left: 1.1rem; /* keep bullets clean, still align with container */
+  display: grid;
+  gap: .55rem;
+  color: var(--fg, #eafdfd);
+}
+.init-list li{
+  line-height: 1.65;
+}
+.init-list strong{
+  color: #e0fdf9;
+}
+
+/* CTA aligns with About section button link */
+.about-cta-wrap .readmore-cta{
+  display:inline-block;
+  padding: 10px 14px;
+  border-radius: 12px;
+  color: #0a0f14;
+  background: linear-gradient(135deg, #014e45, #16e6d1);
+  font-weight: 700;
+  letter-spacing: .2px;
+  text-decoration: none;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.22);
+  transition: transform .15s ease, box-shadow .2s ease;
+}
+.about-cta-wrap .readmore-cta:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 22px 46px rgba(0,255,220,.30);
+}
+
+/* Comets reuse (same as About) — ensure present only if not already global */
+.css-comet{
+  position:absolute;
+  width:120px; height:2px; opacity:.45;
+  background: linear-gradient(270deg, rgba(0,255,255,.7), transparent);
+  transform: rotate(45deg);
+  animation: comet-move 4.8s linear infinite;
+  pointer-events: none;
+}
+.css-comet.c1{ top:8%;  left:-10%; animation-delay:-0.3s; }
+.css-comet.c2{ top:18%; left:-14%; animation-delay:-1.1s; }
+.css-comet.c3{ top:38%; left:-12%; animation-delay:-1.9s; }
+.css-comet.c4{ top:58%; left:-16%; animation-delay:-2.7s; }
+.css-comet.c5{ top:72%; left:-9%;  animation-delay:-3.5s; }
+
+@keyframes comet-move{
+  from{ transform: translate(-10%, -10%) rotate(45deg); opacity:.55; }
+  to  { transform: translate(120vw, 120vh) rotate(45deg); opacity:0; }
+}
+
+/* ShootingStars layer positioning (shared) */
+.shooting-layer{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  z-index:0;
+}
+
+/* Keep content above effects */
+.section.programs .container{
+  position: relative;
+  z-index: 1;
+}
+
+/* Mobile adjustments */
+@media (max-width: 650px){
+  .section.programs h2{ font-size: clamp(1.15rem, 5.5vw, 1.6rem); }
+  .section.programs h3{ font-size: clamp(1.02rem, 4.6vw, 1.25rem); }
+  .init-list{ padding-left: 1rem; }
+}
+/* 1) Universal hairline separator that never gaps on the left */
+.section.has-sep{
+  position: relative;
+}
+.section.has-sep::before{
+  content:"";
+  position:absolute;
+  left:0; top:-1px; right:0; height:1px;
+  /* A very subtle, glow-ish separator that matches the theme */
+  background: linear-gradient(90deg, rgba(10,180,170,.22), rgba(255,255,255,.06) 40%, rgba(10,180,170,.18));
+  z-index: 0; /* sits under container text but above background */
+  pointer-events:none;
+}
+
+/* 2) If a previous border caused the gap, neutralize it on these sections */
+.about.section,
+.section.programs{
+  border-top: none !important;   /* remove old border that was gapping */
+}
+
+/* 3) Ensure the comet layer doesn’t clip the separator on the left */
+.css-comet{
+  z-index: 0;  /* stays under content; ::before will still be visible */
+}
+.section .container{
+  position: relative;
+  z-index: 1;  /* content above separator/comets */
+}
+.section.has-sep::before{ top:-0.5px; }
+ .flow-svg {
+  display: none !important;
+}

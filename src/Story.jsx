@@ -562,7 +562,7 @@ function PrinciplesWheel() {
         }
         .wheel {
           --count: 8;
-          --R: clamp(120px, 20vw, 210px);
+          --R: clamp(120px, 20vw, 200px);
           position: relative;
           width: calc(var(--R) * 2 + 180px);
           height: calc(var(--R) * 2 + 180px);
@@ -603,15 +603,15 @@ function PrinciplesWheel() {
 
         .center{
           position:absolute; top:50%; left:50%; transform: translate(-50%,-50%);
-          width: clamp(240px, 36vw, 340px);
-          padding: clamp(10px, 2.2vw, 18px) clamp(14px, 2.6vw, 22px);
+          width: clamp(220px, 36vw, 210px);
+          padding: clamp(10px, 2.2vw, 9px) clamp(14px, 2.6vw, 22px);
           text-align:center;
           color:#0a0f14;
           background: #aaf7ee;
           border-radius: 999px;
           box-shadow: 0 18px 40px rgba(0,0,0,.25);
-          font-weight: 700;
-          line-height: 1.35;
+          font-weight: 54;
+          line-height: 1.2;
         }
 
         @keyframes spin   { from{ transform: rotate(0deg);}   to{ transform: rotate(360deg);} }
