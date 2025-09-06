@@ -1052,3 +1052,430 @@ html, body {
   }
 }
 
+/* ============================================= */
+/* MOBILE RESPONSIVE CSS FOR SILENT EQUITY */
+/* ============================================= */
+
+/* Base Mobile Styles */
+@media (max-width: 768px) {
+  
+  /* ===== GENERAL LAYOUT ===== */
+  .mobile-container, .container {
+    padding: 0 4vw !important;
+    max-width: 100% !important;
+  }
+  
+  .section {
+    padding: 40px 0 !important;
+  }
+  
+  /* ===== TYPOGRAPHY ===== */
+  .mobile-hero-title {
+    font-size: 2rem !important;
+    line-height: 1.1 !important;
+    margin-bottom: 8px !important;
+  }
+  
+  .mobile-hero-subtitle {
+    font-size: 0.9rem !important;
+    text-align: center !important;
+    margin-top: 15px !important;
+  }
+  
+  .mobile-section-title {
+    font-size: 1.5rem !important;
+    text-align: center !important;
+  }
+  
+  .mobile-subsection-title {
+    font-size: 1.2rem !important;
+    text-align: center !important;
+  }
+  
+  .mobile-section-text {
+    font-size: 0.9rem !important;
+    text-align: center !important;
+    line-height: 1.6 !important;
+  }
+  
+  /* ===== HERO SECTION ===== */
+  .mobile-hero {
+    padding: 60px 0 80px !important;
+  }
+  
+  .mobile-hero-content {
+    text-align: center !important;
+  }
+  
+  .mobile-video-button {
+    margin-top: 80px !important; /* Override the 189px */
+    padding: 12px 20px !important;
+    font-size: 14px !important;
+    border-radius: 50px !important;
+  }
+  
+  .mobile-play-icon {
+    width: 20px !important;
+    height: 20px !important;
+  }
+  
+  .mobile-button-text {
+    font-size: 14px !important;
+  }
+  
+  /* ===== FLOATING DISCORD BUTTON ===== */
+  .mobile-floating-cta {
+    right: 10px !important;
+  }
+  
+  .mobile-discord-button {
+    padding: 6px 8px !important;
+    font-size: 9px !important;
+    gap: 5px !important;
+    border-radius: 25px !important;
+  }
+  
+  .mobile-discord-icon {
+    width: 16px !important;
+    height: 12px !important;
+  }
+  
+  .mobile-discord-text {
+    font-size: 9px !important;
+  }
+  
+  /* ===== TICKER ===== */
+  .mobile-ticker {
+    height: 40px !important;
+    overflow: hidden !important;
+  }
+  
+  .mobile-responsive-ticker {
+    font-size: 12px !important;
+    padding: 10px 0 !important;
+  }
+  
+  .ticker-item {
+    margin-right: 30px !important;
+    white-space: nowrap !important;
+  }
+  
+  /* ===== BACKGROUND EFFECTS ===== */
+  .mobile-nebula {
+    opacity: 0.3 !important; /* Reduce background intensity */
+  }
+  
+  .mobile-hero-bg .mobile-orb {
+    opacity: 0.2 !important;
+    filter: blur(50px) !important;
+  }
+  
+  .mobile-grid {
+    opacity: 0.05 !important;
+  }
+  
+  .mobile-particles .mobile-hp {
+    width: 2px !important;
+    height: 2px !important;
+    opacity: 0.4 !important;
+  }
+  
+  .mobile-streak {
+    opacity: 0.1 !important;
+  }
+  
+  .mobile-comet {
+    opacity: 0.3 !important;
+    transform: scale(0.7) !important;
+  }
+  
+  /* ===== ABOUT & PROGRAMS SECTIONS ===== */
+  .mobile-about, .mobile-programs {
+    padding: 50px 0 !important;
+  }
+  
+  .mobile-cta-wrap {
+    text-align: center !important;
+    margin-top: 20px !important;
+  }
+  
+  .mobile-readmore-cta {
+    display: inline-block !important;
+    padding: 10px 20px !important;
+    font-size: 14px !important;
+    text-align: center !important;
+  }
+  
+  .mobile-init-list {
+    padding-left: 0 !important;
+    list-style: none !important;
+  }
+  
+  .mobile-list-item {
+    margin-bottom: 15px !important;
+    padding: 15px !important;
+    background: rgba(255, 255, 255, 0.05) !important;
+    border-radius: 10px !important;
+    font-size: 0.9rem !important;
+    line-height: 1.5 !important;
+  }
+  
+  /* ===== REVIEWS SECTION ===== */
+  .mobile-reviews-section {
+    padding: 40px 0 !important;
+  }
+  
+  .mobile-reviews-container {
+    padding: 0 20px !important;
+  }
+  
+  .mobile-reviews-track {
+    gap: 12px !important;
+    padding: 0 10px !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  
+  .mobile-review-card {
+    min-width: 250px !important;
+    padding: 12px 15px !important;
+    border-radius: 12px !important;
+    flex-shrink: 0 !important;
+  }
+  
+  .mobile-review-quote {
+    font-size: 0.9rem !important;
+    line-height: 1.4 !important;
+  }
+  
+  .mobile-review-author {
+    font-size: 0.8rem !important;
+    margin-top: 6px !important;
+  }
+  
+  /* ===== LEAD FORM ===== */
+  .mobile-leadform {
+    padding: 50px 0 !important;
+  }
+  
+  .mobile-form {
+    max-width: 100% !important;
+    padding: 0 10px !important;
+  }
+  
+  .mobile-input, .mobile-textarea {
+    width: 100% !important;
+    font-size: 16px !important; /* Prevents zoom on iOS */
+    padding: 14px !important;
+    margin-bottom: 12px !important;
+    border-radius: 8px !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    background: rgba(255, 255, 255, 0.1) !important;
+    color: white !important;
+  }
+  
+  .mobile-textarea {
+    min-height: 100px !important;
+    resize: vertical !important;
+  }
+  
+  .mobile-submit-button {
+    width: 100% !important;
+    padding: 16px !important;
+    font-size: 16px !important;
+    border-radius: 8px !important;
+    margin-top: 10px !important;
+  }
+  
+  /* ===== VIDEO MODAL ===== */
+  .mobile-modal-overlay {
+    padding: 20px !important;
+  }
+  
+  .mobile-modal-content {
+    width: 95vw !important;
+    height: 60vh !important;
+    margin: 20vh auto !important;
+    border-radius: 12px !important;
+    position: relative !important;
+  }
+  
+  .mobile-modal-close {
+    font-size: 24px !important;
+    padding: 8px !important;
+    top: 10px !important;
+    right: 10px !important;
+    width: 40px !important;
+    height: 40px !important;
+  }
+  
+  .mobile-responsive-iframe {
+    border-radius: 8px !important;
+  }
+  
+  /* ===== ANIMATIONS & EFFECTS ===== */
+  .mobile-shooting-star {
+    opacity: 0.6 !important;
+    filter: blur(0.5px) !important;
+  }
+  
+  .mobile-shooting-layer {
+    opacity: 0.7 !important;
+  }
+  
+  /* ===== UTILITIES ===== */
+  .mobile-text-center {
+    text-align: center !important;
+  }
+  
+  .mobile-full-width {
+    width: 100% !important;
+  }
+  
+  .mobile-no-margin {
+    margin: 0 !important;
+  }
+  
+  .mobile-small-padding {
+    padding: 10px !important;
+  }
+  
+  .mobile-hidden {
+    display: none !important;
+  }
+  
+  /* ===== SCROLL BEHAVIOR ===== */
+  html {
+    scroll-behavior: smooth !important;
+  }
+  
+  /* ===== REVEAL ANIMATIONS MOBILE OVERRIDE ===== */
+  .reveal {
+    opacity: 0;
+    transform: translateY(20px) !important; /* Smaller movement on mobile */
+    transition:
+      opacity 400ms ease-out,
+      transform 400ms ease-out !important; /* Faster animations on mobile */
+  }
+  
+  .reveal-in {
+    opacity: 1;
+    transform: translateY(0) !important;
+  }
+  
+  /* ===== PERFORMANCE OPTIMIZATIONS ===== */
+  * {
+    -webkit-tap-highlight-color: transparent !important;
+  }
+  
+  .mobile-orb,
+  .mobile-particles,
+  .mobile-comet {
+    will-change: transform !important;
+    transform: translateZ(0) !important; /* Force hardware acceleration */
+  }
+}
+
+/* ===== SMALLER MOBILE DEVICES (iPhone SE, etc.) ===== */
+@media (max-width: 480px) {
+  .mobile-hero-title {
+    font-size: 1.8rem !important;
+  }
+  
+  .mobile-video-button {
+    margin-top: 60px !important;
+    padding: 10px 16px !important;
+    font-size: 13px !important;
+  }
+  
+  .mobile-discord-button {
+    padding: 5px 6px !important;
+    font-size: 8px !important;
+  }
+  
+  .mobile-section-title {
+    font-size: 1.3rem !important;
+  }
+  
+  .mobile-review-card {
+    min-width: 200px !important;
+    padding: 10px 12px !important;
+  }
+  
+  .mobile-floating-cta {
+    right: 5px !important;
+  }
+}
+
+/* ===== LANDSCAPE MOBILE ===== */
+@media (max-width: 768px) and (orientation: landscape) {
+  .mobile-hero {
+    padding: 40px 0 60px !important;
+  }
+  
+  .mobile-video-button {
+    margin-top: 40px !important;
+  }
+  
+  .mobile-modal-content {
+    height: 80vh !important;
+    margin: 10vh auto !important;
+  }
+}
+
+/* ===== TABLET STYLES ===== */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .container {
+    padding: 0 5vw !important;
+  }
+  
+  .mobile-hero-title {
+    font-size: 2.5rem !important;
+  }
+  
+  .mobile-video-button {
+    margin-top: 120px !important;
+  }
+  
+  .mobile-reviews-track {
+    gap: 16px !important;
+  }
+  
+  .mobile-review-card {
+    min-width: 300px !important;
+  }
+}
+
+/* ===== HIGH DPI DISPLAYS ===== */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .mobile-orb,
+  .mobile-particles {
+    filter: blur(1px) !important; /* Sharper blur on retina */
+  }
+}
+
+/* ===== ACCESSIBILITY ===== */
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .mobile-orb,
+  .mobile-particles,
+  .mobile-comet,
+  .mobile-shooting-star {
+    animation: none !important;
+    transform: none !important;
+    transition: none !important;
+  }
+  
+  .reveal {
+    opacity: 1 !important;
+  }
+}
+
+/* ===== DARK MODE SUPPORT ===== */
+@media (prefers-color-scheme: dark) {
+  .mobile-input,
+  .mobile-textarea {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+  }
+}
