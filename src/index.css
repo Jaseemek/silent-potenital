@@ -763,7 +763,7 @@ html, body {
   transform: translate(-30%, -60%);
   border-radius: 60%;
   z-index: 0;
-  border: 1px solid rgba(13, 196, 179, 0.41);
+  border: 1px solid rgba(13, 196, 179, 0.81);
 }
 
 .hero.section .hero-content::before {
