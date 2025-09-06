@@ -1159,35 +1159,90 @@ html, body {
     margin-right: 30px !important;
     white-space: nowrap !important;
   }
+  @media (max-width: 768px) {
   
-  /* ===== BACKGROUND EFFECTS ===== */
+  /* ===== BACKGROUND EFFECTS - UPDATED ===== */
   .mobile-nebula {
-    opacity: 0.3 !important; /* Reduce background intensity */
+    opacity: 0.6 !important; /* Increased from 0.3 */
   }
   
   .mobile-hero-bg .mobile-orb {
-    opacity: 0.2 !important;
-    filter: blur(50px) !important;
+    opacity: 0.5 !important; /* Increased from 0.2 */
+    filter: blur(40px) !important; /* Reduced blur from 50px */
   }
   
   .mobile-grid {
-    opacity: 0.05 !important;
+    opacity: 0.1 !important; /* Increased from 0.05 */
   }
   
   .mobile-particles .mobile-hp {
-    width: 2px !important;
-    height: 2px !important;
-    opacity: 0.4 !important;
+    width: 3px !important; /* Increased from 2px */
+    height: 3px !important; /* Increased from 2px */
+    opacity: 0.8 !important; /* Increased from 0.4 */
   }
   
   .mobile-streak {
-    opacity: 0.1 !important;
+    opacity: 0.4 !important; /* Increased from 0.1 */
   }
   
   .mobile-comet {
-    opacity: 0.3 !important;
-    transform: scale(0.7) !important;
+    opacity: 0.6 !important; /* Increased from 0.3 */
+    transform: scale(0.8) !important; /* Increased from 0.7 */
   }
+  
+  /* ===== SHOOTING STARS - UPDATED ===== */
+  .mobile-shooting-star {
+    opacity: 0.9 !important; /* Increased from 0.6 */
+    filter: blur(0.2px) !important; /* Reduced blur from 0.5px */
+  }
+  
+  .mobile-shooting-layer {
+    opacity: 1 !important; /* Increased from 0.7 */
+  }
+  
+  /* ===== ENSURE ANIMATIONS WORK ON MOBILE ===== */
+  .mobile-orb,
+  .mobile-particles,
+  .mobile-comet,
+  .mobile-shooting-star {
+    will-change: transform !important;
+    transform: translateZ(0) !important;
+    -webkit-transform: translateZ(0) !important; /* Safari support */
+  }
+  
+  /* Force animations to work on mobile */
+  .mobile-hp {
+    animation-play-state: running !important;
+  }
+  
+  /* Ensure particles container is visible */
+  .mobile-particles {
+    display: block !important;
+    visibility: visible !important;
+    pointer-events: none !important;
+  }
+}
+
+/* ===== FORCE ANIMATIONS ON ALL MOBILE DEVICES ===== */
+@media (max-width: 768px) {
+  /* Override any reduced motion preferences for particles */
+  .mobile-particles .mobile-hp,
+  .mobile-shooting-star,
+  .mobile-comet {
+    animation-play-state: running !important;
+    -webkit-animation-play-state: running !important;
+  }
+  
+  /* Ensure hardware acceleration */
+  .mobile-particles,
+  .mobile-shooting-layer {
+    -webkit-backface-visibility: hidden !important;
+    backface-visibility: hidden !important;
+    -webkit-perspective: 1000 !important;
+    perspective: 1000 !important;
+  }
+}
+
   
   /* ===== ABOUT & PROGRAMS SECTIONS ===== */
   .mobile-about, .mobile-programs {
@@ -1477,5 +1532,18 @@ html, body {
   .mobile-textarea {
     background: rgba(255, 255, 255, 0.05) !important;
     border-color: rgba(255, 255, 255, 0.1) !important;
+  }
+}
+/* ===== MOBILE ANIMATION OVERRIDES ===== */
+@media (max-width: 768px) {
+  /* Force enable animations even with reduced motion preference */
+  @media (prefers-reduced-motion: reduce) {
+    .mobile-particles .mobile-hp,
+    .mobile-shooting-star,
+    .mobile-comet {
+      animation: inherit !important;
+      transform: inherit !important;
+      transition: inherit !important;
+    }
   }
 }
