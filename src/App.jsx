@@ -266,12 +266,12 @@ function ShootingStars() {
   return <div ref={ref} className="shooting-layer mobile-shooting-layer" />;
 }
 
-/* ------------ AboutYourself ------------ */
+/* ------------ AboutYourself - SIMPLIFIED ------------ */
 function AboutYourself() {
   useReveal();
   return (
-    <section className="about section mobile-about">
-      <div className="container mobile-container" style={{ position: "relative", zIndex: 1 }}>
+    <section className="about section">
+      <div className="container" style={{ position: "relative", zIndex: 1 }}>
         <h2 className="reveal line mobile-section-title">About yourself</h2>
         <p className="subtle reveal line mobile-section-text" style={{ marginTop: 10 }}>
           The Silent Equity journey mirrors the early challenges every trader faces — uncertainty, drawdowns, and the
@@ -284,22 +284,23 @@ function AboutYourself() {
           </Link>
         </div>
       </div>
-      <div className="css-comet c1 mobile-comet" />
-      <div className="css-comet c2 mobile-comet" />
-      <div className="css-comet c3 mobile-comet" />
-      <div className="css-comet c4 mobile-comet" />
-      <div className="css-comet c5 mobile-comet" />
+      {/* REMOVE mobile-comet classes - use original classes */}
+      <div className="css-comet c1" />
+      <div className="css-comet c2" />
+      <div className="css-comet c3" />
+      <div className="css-comet c4" />
+      <div className="css-comet c5" />
       <ShootingStars />
     </section>
   );
 }
 
-/* ------------ CommunityPrograms ------------ */
+/* ------------ CommunityPrograms - SIMPLIFIED ------------ */
 function CommunityPrograms() {
   useReveal();
   return (
-    <section className="about section programs mobile-programs">
-      <div className="container mobile-container" style={{ position: "relative", zIndex: 1 }}>
+    <section className="about section programs">
+      <div className="container" style={{ position: "relative", zIndex: 1 }}>
         <h2 className="reveal line mobile-section-title">Community Programs</h2>
         <p className="subtle reveal line mobile-section-text" style={{ marginTop: 10 }}>
           At Silent Equity, our commitment is to empower traders through disciplined learning and proven strategies. Our
@@ -324,17 +325,18 @@ function CommunityPrograms() {
           </Link>
         </div>
       </div>
-      <div className="css-comet c1 mobile-comet" />
-      <div className="css-comet c2 mobile-comet" />
-      <div className="css-comet c3 mobile-comet" />
-      <div className="css-comet c4 mobile-comet" />
-      <div className="css-comet c5 mobile-comet" />
+      {/* REMOVE mobile-comet classes - use original classes */}
+      <div className="css-comet c1" />
+      <div className="css-comet c2" />
+      <div className="css-comet c3" />
+      <div className="css-comet c4" />
+      <div className="css-comet c5" />
       <ShootingStars />
     </section>
   );
 }
 
-/* ------------ Reviews ------------ */
+/* ------------ Reviews - SIMPLIFIED ------------ */
 function Reviews() {
   useReveal();
   const data = [
@@ -346,14 +348,15 @@ function Reviews() {
   ];
   const long = [...data, ...data, ...data];
   return (
-    <section className="section mobile-reviews-section">
-      <div className="container reviews mobile-reviews-container">
+    <section className="section">
+      <div className="container reviews">
         <h2 className="reveal line mobile-section-title">Reviews</h2>
+        {/* Use original classes, just add mobile-reviews-track for responsive styling */}
         <div className="reviews-track mobile-reviews-track" style={{ marginTop: 14 }}>
           {long.map((r, i) => (
             <div className="review-card reveal line mobile-review-card" key={i}>
-              <p className="mobile-review-quote" style={{ fontWeight: 600 }}>{r.q}</p>
-              <p className="subtle mobile-review-author" style={{ marginTop: 8 }}>{r.a}</p>
+              <p style={{ fontWeight: 600 }}>{r.q}</p>
+              <p className="subtle" style={{ marginTop: 8 }}>{r.a}</p>
             </div>
           ))}
         </div>
@@ -361,6 +364,7 @@ function Reviews() {
     </section>
   );
 }
+
 
 /* ------------ LeadForm ------------ */
 function LeadForm() {
