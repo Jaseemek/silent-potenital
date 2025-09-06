@@ -1547,3 +1547,98 @@ html, body {
     }
   }
 }
+@media (max-width: 768px) {
+  
+  /* ===== COMET ANIMATIONS - FIXED ===== */
+  .mobile-comet {
+    opacity: 0.7 !important;
+    transform: scale(0.8) !important;
+    /* REMOVE any animation: none !important; if present */
+    animation: inherit !important; /* Preserve original comet animation */
+    -webkit-animation: inherit !important;
+  }
+  
+  /* Ensure comets keep their original animation properties */
+  .css-comet.mobile-comet {
+    animation-play-state: running !important;
+    -webkit-animation-play-state: running !important;
+    animation-duration: inherit !important;
+    animation-timing-function: inherit !important;
+    animation-iteration-count: inherit !important;
+  }
+  
+  /* Force enable comet animations */
+  .css-comet.c1.mobile-comet,
+  .css-comet.c2.mobile-comet,
+  .css-comet.c3.mobile-comet,
+  .css-comet.c4.mobile-comet,
+  .css-comet.c5.mobile-comet {
+    animation: inherit !important;
+    transform: inherit !important;
+    will-change: transform !important;
+  }
+}
+@media (max-width: 768px) {
+  
+  /* ===== REVIEWS SCROLL SPEED - ENHANCED ===== */
+  .mobile-reviews-track {
+    gap: 12px !important;
+    padding: 0 10px !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    scroll-behavior: smooth !important;
+    
+    /* Enhanced scroll properties */
+    -webkit-scroll-snap-type: x mandatory !important;
+    scroll-snap-type: x mandatory !important;
+    
+    /* Faster/smoother scrolling */
+    scroll-padding-left: 10px !important;
+    
+    /* CSS Animation for auto-scroll if you want it */
+    animation: reviews-auto-scroll 20s linear infinite !important;
+  }
+  
+  .mobile-review-card {
+    min-width: 250px !important;
+    padding: 12px 15px !important;
+    border-radius: 12px !important;
+    flex-shrink: 0 !important;
+    scroll-snap-align: start !important;
+  }
+}
+
+/* Add this keyframe animation for reviews auto-scroll */
+@keyframes reviews-auto-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+/* ===== FORCE ANIMATIONS ON MOBILE ===== */
+@media (max-width: 768px) {
+  
+  /* Override reduced motion specifically for our animations */
+  @media (prefers-reduced-motion: reduce) {
+    .mobile-comet,
+    .css-comet.mobile-comet,
+    .mobile-shooting-star,
+    .mobile-particles .mobile-hp {
+      animation: inherit !important;
+      transform: inherit !important;
+      transition: inherit !important;
+    }
+    
+    .mobile-reviews-track {
+      animation: reviews-auto-scroll 20s linear infinite !important;
+    }
+  }
+  
+  /* Ensure hardware acceleration for all animations */
+  .mobile-comet,
+  .mobile-reviews-track,
+  .mobile-shooting-star {
+    -webkit-transform: translateZ(0) !important;
+    transform: translateZ(0) !important;
+    -webkit-backface-visibility: hidden !important;
+    backface-visibility: hidden !important;
+  }
+}
