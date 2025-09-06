@@ -73,7 +73,7 @@ h1, h2, h3 { line-height: 1.15; }
 .hero { position: relative; min-height: 78vh; display: grid; place-items: center; text-align: center; }
 .hero-canvas { position: absolute; inset: 0; z-index: 0; filter: blur(0.5px) saturate(1.05); opacity: 0.45; }
 .hero-content { position: relative; z-index: 1; padding: 24px; }
-.hero h1 { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 650; letter-spacing: 0.2px; }
+.hero h1 { font-size: clamp(2rem, 5vw, 3.9rem); font-weight: 990; letter-spacing: 0.9px; }
 .hero p { margin-top: 12px; font-size: clamp(0.5rem, 1vw, 0.95rem); }
 
 /* Reviews carousel */
@@ -532,4 +532,537 @@ h1, h2, h3 { line-height: 1.15; }
 .section.has-sep::before{ top:-0.5px; }
  .flow-svg {
   display: none !important;
+}
+/* === MOBILE IMPROVEMENTS === */
+@media (max-width: 900px) {
+  .container {
+    padding: 0 3vw;
+    max-width: 99vw;
+  }
+  .writeup,
+  .new-section,
+  .programs,
+  .addons-section {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .hero-title, .subhead {
+    font-size: 1.25rem !important;
+    text-align: center !important;
+    width: 100% !important;
+  }
+  .writeup,
+  .new-section {
+    padding: 28px 0 28px 0 !important;
+  }
+  .programs, .addons-section {
+    padding: 18px 0 !important;
+    gap: 12px !important;
+  }
+  .prog-card, .addons-section .prog-card { 
+    flex-direction: column !important;
+    align-items: stretch !important;
+    font-size: .97rem !important;
+    padding: 10px 8px !important;
+    border-radius: 11px !important;
+    min-width: 0 !important;
+  }
+  .prog-head {
+    flex-direction: column !important;
+    gap: 2px !important;
+  }
+  .bodycopy {
+    font-size: 0.98rem !important;
+    padding: 8px 2px 0 !important;
+    text-align: center !important;
+  }
+  .subhead-line::after {
+    left: 50% !important;
+    transform: translateX(-50%);
+    width: 68% !important;
+  }
+  /* Timeline */
+  .flow-steps {
+    gap: 18px !important;
+    padding-left: 4vw !important;
+    padding-right: 4vw !important;
+  }
+  .flow-row {
+    flex-direction: column !important;
+    align-items: center !important;
+    min-width: 190px !important;
+    padding: 0 2px !important;
+    font-size: 0.95rem !important;
+  }
+  .flow-row .badge {
+    margin-bottom: 6px !important;
+    width: 28px !important;
+    height: 28px !important;
+    font-size: 1rem !important;
+  }
+  .row-content h3 {
+    font-size: 1rem !important;
+    line-height: 1.2 !important;
+    margin-bottom: 4px !important;
+  }
+  .row-content p {
+    font-size: 0.93rem !important;
+    text-align: center !important;
+  }
+  /* Addons stack vertically */
+  .addons-section {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+}
+
+@media (pointer: coarse) {
+  .badge, .prog-card, .row-content, .prog-head {
+    touch-action: manipulation;
+  }
+}
+
+/* Prevent horizontal scrollbar on mobile */
+html, body {
+  max-width: 100vw;
+  overflow-x: hidden !important;
+}
+/* Video Modal Styles (unchanged from previous) */
+.video-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(5px);
+}
+
+.video-modal-content {
+  position: relative;
+  width: 90%;
+  max-width: 960px;
+  height: 70vh;
+  background: #000;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.video-modal-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 2.5em;
+  color: #fff;
+  cursor: pointer;
+  z-index: 1010;
+  padding: 5px 10px;
+  line-height: 1;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+}
+
+.video-modal-close:hover {
+  opacity: 1;
+}
+
+.video-modal-content iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+
+/* General Button Styles (for "What is Silent Equity?" and "JOIN DISCORD") */
+/* Define a primary button style that matches the image you sent */
+.cta-button-primary, .cta-button-secondary {
+  background-color: #26a096; /* Color sampled from your image */
+  color: white;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 45px;
+  font-size: 0.8em;
+  font-weight: bold;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(38, 160, 150, 0.4); /* Subtle glow matching new color */
+  letter-spacing: 0.2px;
+  text-transform: uppercase;
+  display: inline-flex; /* To align icon and text for FloatingCTA */
+  align-items: center;
+  justify-content: center;
+  gap: 8px; /* Spacing between icon and text */
+}
+
+.cta-button-primary:hover, .cta-button-secondary:hover {
+  background-color: #218c83; /* Slightly darker on hover */
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(38, 160, 150, 0.6);
+}
+
+.cta-button-primary:active, .cta-button-secondary:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 10px rgba(38, 160, 150, 0.3);
+}
+
+/* Ensure hero-content aligns items */
+.hero-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+/* General Body/HTML Styles for Pure Black Background */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: #ffffff;
+  background-color: #000000;
+  overflow-x: hidden;
+}
+
+/* Hero Section Styles */
+.hero.section {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #000000;
+  overflow: hidden;
+  padding: 0;
+}
+
+/* Additional orbiting lines */
+.hero.section .hero-content::before,
+.hero.section .hero-content::after {
+  content: '';
+  position: absolute;
+  top: 25%;
+  left: 50%;
+  width: 160px;
+  height: 450px;
+  transform: translate(-30%, -60%);
+  border-radius: 60%;
+  z-index: 0;
+  border: 1px solid rgba(13, 196, 179, 0.41);
+}
+
+.hero.section .hero-content::before {
+  animation: swirl-lines 12s linear infinite;
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+.hero.section .hero-content::after {
+  animation: swirl-lines 15s linear infinite reverse;
+}
+
+/* Keyframes for the swirling animation */
+@keyframes swirl-outer {
+  from {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+@keyframes swirl-lines {
+  from {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+/* Hero Content (remains on top) */
+.hero-content {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+}
+
+/* The glowing, swirling light trails */
+.hero-content::before,
+.hero-content::after {
+  animation: none; /* Resetting animations from previous attempts */
+}
+
+/* This is the new CSS for the swirling light trails */
+.hero.section::before {
+  animation: swirl-and-glow 20s linear infinite;
+}
+
+.hero.section::after {
+  animation: swirl-and-glow 30s linear infinite reverse;
+}
+
+@keyframes swirl-and-glow {
+  0% { transform: translate(-50%, -50%) rotate(0deg) scale(0.9); opacity: 0; }
+  25% { transform: translate(-50%, -50%) rotate(90deg) scale(1); opacity: 1; }
+  50% { transform: translate(-50%, -50%) rotate(180deg) scale(0.95); opacity: 0.8; }
+  75% { transform: translate(-50%, -50%) rotate(270deg) scale(1.05); opacity: 1; }
+  100% { transform: translate(-50%, -50%) rotate(360deg) scale(0.9); opacity: 0; }
+}
+
+/* The additional "particles" for the trail effect */
+.hero-content::before,
+.hero-content::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 1000px;
+  height: 700px;
+  border-radius: 50%;
+  z-index: -1;
+  background-image: radial-gradient(circle, rgba(13, 196, 179, 0.5) 0%, rgba(13, 196, 179, 0) 50%);
+}
+
+.hero-content::before {
+  animation: swirl-trail 15s linear infinite;
+}
+
+.hero-content::after {
+  animation: swirl-trail 22s linear infinite reverse;
+}
+
+@keyframes swirl-trail {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+/* Container */
+.hero-particles {
+  position: absolute;
+  inset: 0;
+  z-index: 0; /* behind .hero-content, above .hero-bg */
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/* Base particle */
+.hero-particles .hp {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(13,196,179,0.9) 0%, rgba(13,196,179,0) 70%);
+  box-shadow:
+    0 0 8px rgba(13,196,179,0.7),
+    0 0 16px rgba(13,196,179,0.35);
+  opacity: 0.7;
+  filter: saturate(110%);
+  animation-name: hp-drift, hp-flicker;
+  animation-timing-function: linear, ease-in-out;
+  animation-iteration-count: infinite, infinite;
+}
+
+/* Randomize start position and motion via nth-child */
+.hero-particles .hp:nth-child(odd)  { width: 3px; height: 3px; opacity: 0.6; }
+.hero-particles .hp:nth-child(3n)   { width: 5px; height: 5px; opacity: 0.8; }
+.hero-particles .hp:nth-child(5n)   { filter: saturate(130%); }
+.hero-particles .hp:nth-child(7n)   { box-shadow: 0 0 10px rgba(0,220,255,0.6), 0 0 20px rgba(0,220,255,0.3); }
+
+/* Place particles around the scene */
+.hero-particles .hp:nth-child(1)  { left: 8%;  top: 18%;  animation-duration: 18s, 3.2s; animation-delay: -2s, 0.1s; }
+.hero-particles .hp:nth-child(2)  { left: 22%; top: 42%;  animation-duration: 22s, 2.7s; animation-delay: -6s, 0.4s; }
+.hero-particles .hp:nth-child(3)  { left: 35%; top: 12%;  animation-duration: 19s, 3.0s; animation-delay: -4s, 0.2s; }
+.hero-particles .hp:nth-child(4)  { left: 48%; top: 30%;  animation-duration: 24s, 2.8s; animation-delay: -8s, 0.3s; }
+.hero-particles .hp:nth-child(5)  { left: 62%; top: 20%;  animation-duration: 21s, 2.9s; animation-delay: -10s, 0.25s; }
+.hero-particles .hp:nth-child(6)  { left: 76%; top: 40%;  animation-duration: 23s, 3.1s; animation-delay: -5s, 0.15s; }
+.hero-particles .hp:nth-child(7)  { left: 12%; top: 66%;  animation-duration: 20s, 3.3s; animation-delay: -7s, 0.35s; }
+.hero-particles .hp:nth-child(8)  { left: 28%; top: 72%;  animation-duration: 26s, 2.6s; animation-delay: -11s, 0.45s; }
+.hero-particles .hp:nth-child(9)  { left: 44%; top: 64%;  animation-duration: 22s, 3.0s; animation-delay: -9s, 0.2s; }
+.hero-particles .hp:nth-child(10) { left: 58%; top: 70%;  animation-duration: 25s, 2.7s; animation-delay: -3s, 0.4s; }
+.hero-particles .hp:nth-child(11) { left: 70%; top: 62%;  animation-duration: 21s, 2.8s; animation-delay: -12s, 0.5s; }
+.hero-particles .hp:nth-child(12) { left: 82%; top: 56%;  animation-duration: 24s, 3.2s; animation-delay: -1s, 0.2s; }
+
+/* Duplicate placements for remaining to spread across area */
+.hero-particles .hp:nth-child(13) { left: 16%; top: 28%;  animation-duration: 23s, 3.0s; animation-delay: -6s, 0.1s; }
+.hero-particles .hp:nth-child(14) { left: 30%; top: 50%;  animation-duration: 19s, 2.6s; animation-delay: -2s, 0.3s; }
+.hero-particles .hp:nth-child(15) { left: 40%; top: 22%;  animation-duration: 22s, 3.1s; animation-delay: -10s, 0.35s; }
+.hero-particles .hp:nth-child(16) { left: 52%; top: 44%;  animation-duration: 26s, 2.9s; animation-delay: -5s, 0.25s; }
+.hero-particles .hp:nth-child(17) { left: 66%; top: 26%;  animation-duration: 20s, 3.2s; animation-delay: -8s, 0.2s; }
+.hero-particles .hp:nth-child(18) { left: 78%; top: 36%;  animation-duration: 24s, 2.7s; animation-delay: -11s, 0.4s; }
+.hero-particles .hp:nth-child(19) { left: 18%; top: 78%;  animation-duration: 21s, 3.0s; animation-delay: -4s, 0.3s; }
+.hero-particles .hp:nth-child(20) { left: 34%; top: 84%;  animation-duration: 25s, 2.8s; animation-delay: -7s, 0.15s; }
+.hero-particles .hp:nth-child(21) { left: 48%; top: 78%;  animation-duration: 22s, 3.1s; animation-delay: -9s, 0.25s; }
+.hero-particles .hp:nth-child(22) { left: 62%; top: 82%;  animation-duration: 24s, 2.6s; animation-delay: -3s, 0.45s; }
+.hero-particles .hp:nth-child(23) { left: 74%; top: 74%;  animation-duration: 23s, 3.2s; animation-delay: -12s, 0.2s; }
+.hero-particles .hp:nth-child(24) { left: 86%; top: 68%;  animation-duration: 26s, 2.7s; animation-delay: -1s, 0.4s; }
+
+/* Motion: diagonal drift + slight bob */
+@keyframes hp-drift {
+  0%   { transform: translate3d(0, 0, 0) scale(1); }
+  50%  { transform: translate3d(6vmin, -4vmin, 0) scale(1.06); }
+  100% { transform: translate3d(0, 0, 0) scale(1); }
+}
+
+/* Flicker shimmer to mimic tiny energy pulses */
+@keyframes hp-flicker {
+  0%, 100% { opacity: 0.7; }
+  40% { opacity: 0.9; }
+  60% { opacity: 0.6; }
+}
+
+
+
+@keyframes hp-arc {
+  0% { transform: rotate(-12deg); opacity: 0; }
+  10% { opacity: 0.4; }
+  50% { transform: rotate(10deg); opacity: 0.25; }
+  90% { opacity: 0; }
+  100% { transform: rotate(-12deg); opacity: 0; }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .hero-particles .hp,
+  .hero-particles .hp-streak {
+    animation: none !important;
+  }
+}
+/* Reveal baseline: hidden until intersected */
+.reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  transition:
+    opacity 540ms ease-out,
+    transform 540ms ease-out;
+  will-change: opacity, transform;
+}
+
+/* When revealed by IntersectionObserver */
+.reveal-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Optional: subtle stagger within common containers */
+.hero-content .line { transition-delay: 40ms; }
+.hero-content .line:nth-child(2) { transition-delay: 120ms; }
+.hero-content .line:nth-child(3) { transition-delay: 180ms; }
+.hero-content .line:nth-child(4) { transition-delay: 240ms; }
+
+.about.section .container .line { transition-delay: 60ms; }
+.about.section .container .line:nth-child(2) { transition-delay: 140ms; }
+.about.section .container .line:nth-child(3) { transition-delay: 220ms; }
+.about.section .container .line:nth-child(4) { transition-delay: 300ms; }
+.about.section .container .line:nth-child(5) { transition-delay: 360ms; }
+
+/* Reviews grid/cards subtle stagger */
+.reviews .review-card.line { transition-delay: 80ms; }
+.reviews .review-card.line:nth-child(2) { transition-delay: 140ms; }
+.reviews .review-card.line:nth-child(3) { transition-delay: 200ms; }
+.reviews .review-card.line:nth-child(4) { transition-delay: 260ms; }
+.reviews .review-card.line:nth-child(5) { transition-delay: 320ms; }
+
+/* Lead form elements */
+.leadform-section .line { transition-delay: 80ms; }
+
+/* Ensure no layout shift while hidden */
+.reveal,
+.reveal-in {
+  will-change: opacity, transform;
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
+/* Video CTA Button (green style like Milliondots) */
+.cta-button-video {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 24px;
+  background: linear-gradient(135deg, #047d8d 0%, #023b47 100%);
+  color: white;
+  border: none;
+  border-radius: 50px;
+  font-family: 'Poppins', system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.3);
+  position: relative;
+  z-index: 2;
+}
+
+.cta-button-video:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(16, 185, 129, 0.4);
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+}
+
+.cta-button-video:active {
+  transform: translateY(0);
+}
+
+.cta-button-video .play-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  backdrop-filter: blur(4px);
+}
+
+.cta-button-video .play-icon svg {
+  margin-left: 2px; /* Slight offset for better visual centering */
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .cta-button-video {
+    padding: 12px 20px;
+    font-size: 15px;
+    gap: 10px;
+  }
+  
+  .cta-button-video .play-icon {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+/* Enhanced Discord button styling */
+.cta-button-secondary {
+   background: linear-gradient(135deg, #047d8d 0%, #023b47 100%);
+  box-shadow: 0 4px 16px rgba(88, 101, 242, 0.3);
+}
+
+.cta-button-secondary:hover {
+  background: linear-gradient(135deg, #4752C4 0%, #3C4BAC 100%);
+  box-shadow: 0 6px 20px rgba(88, 101, 242, 0.4);
+}
+
+.cta-button-secondary svg {
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
 }

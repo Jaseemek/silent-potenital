@@ -356,7 +356,7 @@ export default function Initiatives() {
             <li>Minimal Time Commitment: Demands only about 10 minutes of attention per day.</li>
             <li>Suitable for : Working professionals.</li>
             <li>Cyclic Profit Booking: Each structured cycle finishes with locked-in gains before the next cycle begins.</li>
-            <li>Consistenyc : 10% per month profit assurance.</li>
+            <li>Consisteny : 10% per month profit assurance.</li>
           </ul>
         </article>
       </section>

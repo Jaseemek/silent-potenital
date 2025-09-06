@@ -1,9 +1,96 @@
-import React, { useEffect, useMemo, useRef } from "react";
-import { Routes, Route, Link } from "react-router-dom";
+import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { Routes, Route, Link, useLocation } from "react-router-dom";
 import Story from "./Story";
 import Initiatives from "./Services";
 
-// ------------ ForexTicker ------------
+/* ---------- AGGRESSIVE ScrollToTop (Multiple Fallbacks) ---------- */
+function ScrollToTop() {
+  const { pathname } = useLocation();
+
+  // Disable scroll restoration immediately
+  useLayoutEffect(() => {
+    if ("scrollRestoration" in window.history) {
+      window.history.scrollRestoration = "manual";
+    }
+  }, []);
+
+  // Immediate scroll reset before paint
+  useLayoutEffect(() => {
+    // Temporarily disable smooth scrolling
+    const htmlStyle = document.documentElement.style.scrollBehavior;
+    const bodyStyle = document.body.style.scrollBehavior;
+    document.documentElement.style.scrollBehavior = "auto";
+    document.body.style.scrollBehavior = "auto";
+
+    // Multiple scroll reset attempts
+    window.scrollTo(0, 0);
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    document.documentElement.scrollLeft = 0;
+    document.body.scrollLeft = 0;
+
+    // Restore scroll behavior after reset
+    setTimeout(() => {
+      document.documentElement.style.scrollBehavior = htmlStyle;
+      document.body.style.scrollBehavior = bodyStyle;
+    }, 0);
+  }, [pathname]);
+
+  // Additional fallback attempts after paint
+  useEffect(() => {
+    // Multiple timed attempts to ensure scroll happens
+    const timeouts = [
+      setTimeout(() => {
+        window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+      }, 0),
+      
+      setTimeout(() => {
+        window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+      }, 10),
+      
+      setTimeout(() => {
+        window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+      }, 50),
+      
+      setTimeout(() => {
+        window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+      }, 100)
+    ];
+
+    return () => timeouts.forEach(clearTimeout);
+  }, [pathname]);
+
+  return null;
+}
+
+/* ---------- useReveal hook: fade-in on scroll ---------- */
+function useReveal(selector = ".reveal", options = { rootMargin: "0px 0px -10% 0px", threshold: 0.1 }) {
+  useEffect(() => {
+    const els = Array.from(document.querySelectorAll(selector));
+    if (!("IntersectionObserver" in window) || els.length === 0) {
+      els.forEach((el) => el.classList.add("reveal-in"));
+      return;
+    }
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("reveal-in");
+          io.unobserve(entry.target);
+        }
+      });
+    }, options);
+    els.forEach((el) => io.observe(el));
+    return () => io.disconnect();
+  }, [selector, options]);
+}
+
+/* ------------ ForexTicker ------------ */
 function ForexTicker() {
   const pairs = useMemo(
     () => [
@@ -30,154 +117,122 @@ function ForexTicker() {
   );
 }
 
-// ------------ FluidCanvas (hero background ribbon) ------------
-function FluidCanvas() {
-  const ref = useRef(null);
-
-  useEffect(() => {
-    const canvas = ref.current;
-    const ctx = canvas.getContext("2d", { alpha: true });
-    const dpr = Math.min(2, window.devicePixelRatio || 1);
-    const parent = canvas.parentElement;
-    let raf;
-
-    const off = document.createElement("canvas");
-    const octx = off.getContext("2d");
-
-    function resize() {
-      const r = parent.getBoundingClientRect();
-      const W = Math.floor(r.width * dpr);
-      const H = Math.floor(r.height * dpr);
-      canvas.style.width = r.width + "px";
-      canvas.style.height = r.height + "px";
-      canvas.width = W;
-      canvas.height = H;
-      off.width = W;
-      off.height = H;
-    }
-
-    const cfg = { radius: 0.36, width: 0.08, wobbleAmp: 0.018, wobbleFreq: 2.2, speed: 0.22, hue: 172 };
-
-    function drawRibbon(time) {
-      const W = canvas.width, H = canvas.height;
-      const m = Math.min(W, H);
-      const cx = W * 0.5, cy = H * 0.5;
-      const R = cfg.radius * m;
-      const half = (cfg.width * m) * 0.5;
-
-      octx.clearRect(0, 0, W, H);
-
-      const steps = 240;
-      const t = time * cfg.speed;
-
-      function edgePath(sign) {
-        octx.beginPath();
-        for (let i = 0; i <= steps; i++) {
-          const a = (i / steps) * Math.PI * 2 + t;
-          const wob = cfg.wobbleAmp * m * Math.sin(cfg.wobbleFreq * a - time * 0.9);
-          const rr = R + sign * (half + wob);
-          const x = cx + rr * Math.cos(a);
-          const y = cy + rr * Math.sin(a) * 0.65;
-          if (i === 0) octx.moveTo(x, y); else octx.lineTo(x, y);
-        }
-      }
-
-      const bodyGrad = octx.createLinearGradient(cx, cy - R - half, cx, cy + R + half);
-      bodyGrad.addColorStop(0.0, `hsla(${cfg.hue}, 100%, 65%, 0.10)`);
-      bodyGrad.addColorStop(0.5, `hsla(${cfg.hue}, 100%, 58%, 0.22)`);
-      bodyGrad.addColorStop(1.0, `hsla(${cfg.hue}, 100%, 65%, 0.10)`);
-
-      octx.save();
-      octx.fillStyle = bodyGrad;
-      edgePath(+1); edgePath(-1);
-      octx.closePath();
-      octx.fill();
-
-      octx.lineJoin = "round";
-      octx.lineCap = "round";
-
-      octx.strokeStyle = `hsla(${cfg.hue}, 100%, 88%, 0.45)`;
-      octx.lineWidth = Math.max(1, 0.008 * m);
-      edgePath(-1);
-      octx.stroke();
-
-      octx.strokeStyle = `hsla(${cfg.hue}, 80%, 38%, 0.35)`;
-      octx.lineWidth = Math.max(1, 0.006 * m);
-      edgePath(+1);
-      octx.stroke();
-
-      const rippleCount = 4;
-      for (let k = 0; k < rippleCount; k++) {
-        const phase = time * (0.5 + 0.15 * k);
-        octx.globalCompositeOperation = "lighter";
-        octx.strokeStyle = `hsla(${cfg.hue}, 100%, 75%, ${0.14 - k * 0.02})`;
-        octx.lineWidth = Math.max(1, 0.004 * m);
-        octx.beginPath();
-        for (let i = 0; i <= steps; i++) {
-          const a = (i / steps) * Math.PI * 2 + t;
-          const ripple = Math.sin(a * (cfg.wobbleFreq + k) + phase) * (half * 0.35);
-          const rr = R + ripple;
-          const x = cx + rr * Math.cos(a);
-          const y = cy + rr * Math.sin(a) * 0.65;
-          if (i === 0) octx.moveTo(x, y); else octx.lineTo(x, y);
-        }
-        octx.stroke();
-        octx.globalCompositeOperation = "source-over";
-      }
-
-      octx.restore();
-
-      ctx.clearRect(0, 0, W, H);
-      ctx.globalCompositeOperation = "source-over";
-      ctx.drawImage(off, 0, 0);
-
-      ctx.globalCompositeOperation = "lighter";
-      ctx.filter = "blur(12px) saturate(1.15) opacity(0.65)";
-      ctx.drawImage(off, 0, 0);
-      ctx.filter = "blur(24px) saturate(1.08) opacity(0.35)";
-      ctx.drawImage(off, 0, 0);
-      ctx.filter = "none";
-      ctx.globalCompositeOperation = "source-over";
-    }
-
-    function loop(ts) { drawRibbon(ts * 0.001); raf = requestAnimationFrame(loop); }
-
-    resize();
-    const ro = new ResizeObserver(resize);
-    ro.observe(parent);
-    raf = requestAnimationFrame(loop);
-
-    return () => { cancelAnimationFrame(raf); ro.disconnect(); };
-  }, []);
-
-  return <canvas className="hero-canvas" ref={ref} />;
+/* ------------ NebulaLayer (fixed background under content) ------------ */
+function NebulaLayer() {
+  return (
+    <div className="nebula-layer" aria-hidden="true">
+      <div className="nebula-cloud n1" />
+      <div className="nebula-cloud n2" />
+      <div className="nebula-noise" />
+    </div>
+  );
 }
 
-// ------------ Hero ------------
-function Hero() {
+/* ------------ VideoModal Component ------------ */
+const VideoModal = ({ videoId, onClose }) => {
+  if (!videoId) return null;
+  const youtubeEmbedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
+  return (
+    <div className="video-modal-overlay" onClick={onClose}>
+      <div className="video-modal-content" onClick={(e) => e.stopPropagation()}>
+        <button className="video-modal-close" onClick={onClose}>&times;</button>
+        <iframe
+          width="100%"
+          height="100%"
+          src={youtubeEmbedUrl}
+          frameBorder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+          title="What is Silent Equity?"
+        ></iframe>
+      </div>
+    </div>
+  );
+};
+
+/* ------------ HeroBackground (orbital glows + parallax grid + arc) ------------ */
+function HeroBackground() {
+  useEffect(() => {
+    const root = document.documentElement;
+    const onMouse = (e) => {
+      const x = (e.clientX / window.innerWidth - 0.5) * 2;
+      const y = (e.clientY / window.innerHeight - 0.5) * 2;
+      root.style.setProperty("--tilt-x", x.toFixed(3));
+      root.style.setProperty("--tilt-y", y.toFixed(3));
+    };
+    const onScroll = () => {
+      root.style.setProperty("--hero-scroll", String(window.scrollY * 0.02));
+    };
+    window.addEventListener("mousemove", onMouse, { passive: true });
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    return () => {
+      window.removeEventListener("mousemove", onMouse);
+      window.removeEventListener("scroll", onScroll);
+    };
+  }, []);
+  return (
+    <div className="hero-bg" aria-hidden="true">
+      <div className="hero-orb o1" />
+      <div className="hero-orb o2" />
+      <div className="hero-grid" />
+      <div className="hero-arc a1" />
+    </div>
+  );
+}
+
+/* ------------ HeroParticles (tiny drifting dots + rare arc streaks) ------------ */
+function HeroParticles() {
+  const N = 24;
+  return (
+    <div className="hero-particles" aria-hidden="true">
+      {Array.from({ length: N }).map((_, i) => (
+        <span key={i} className="hp" />
+      ))}
+      <span className="hp-streak s1" />
+      <span className="hp-streak s2" />
+    </div>
+  );
+}
+
+/* ------------ Hero ------------ */
+function Hero({ onShowVideo }) {
+  useReveal(); // activate reveal on first mount
   return (
     <header className="hero section">
-      <FluidCanvas />
+      <HeroBackground />
+      <HeroParticles />
       <div className="hero-content container">
-        <h1>NO FAKE HYPE</h1>
-        <h1>NO GUESSING</h1>
-        <p className="subtle">A focused community— Controlled growth through discipline.</p>
+        <h1 className="reveal line">NO FAKE HYPE</h1>
+        <h1 className="reveal line">NO GUESSING</h1>
+        <p className="subtle reveal line">A focused community— Controlled growth through discipline.</p>
+        <button
+          className="cta-button-video reveal line"
+          onClick={onShowVideo}
+          aria-label="What is Silent Equity?"
+          style={{ marginTop: "189px" }} // Increased from 60px to 120px
+        >
+          <span className="play-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M8 5v14l11-7z"/>
+            </svg>
+          </span>
+          <span>What is Silent Equity?</span>
+        </button>
       </div>
     </header>
   );
 }
 
-// ------------ ShootingStars ------------
+
+/* ------------ ShootingStars ------------ */
 function ShootingStars() {
   const ref = React.useRef(null);
-
   React.useEffect(() => {
     const layer = ref.current;
     if (!layer) return;
-
     let timer;
     let running = true;
-
     function spawn() {
       if (!running) return;
       const rect = layer.getBoundingClientRect();
@@ -185,138 +240,121 @@ function ShootingStars() {
         timer = setTimeout(spawn, 300);
         return;
       }
-
       const star = document.createElement("div");
       star.className = "shooting-star";
-
       const startX = Math.random() * rect.width;
       const startY = Math.random() * rect.height * 0.6;
-
       const length = 280 + Math.random() * 220;
-      const angleDeg = -30 + Math.random() * -15; // -45..-30
+      const angleDeg = -30 + Math.random() * -15;
       const angle = (angleDeg * Math.PI) / 180;
       const dx = Math.cos(angle) * length;
       const dy = Math.sin(angle) * length;
-
       star.style.setProperty("--sx", `${startX}px`);
       star.style.setProperty("--sy", `${startY}px`);
       star.style.setProperty("--dx", `${dx}px`);
       star.style.setProperty("--dy", `${dy}px`);
       star.style.setProperty("--rot", `${angleDeg}deg`);
       star.style.animation = `shoot ${1.4 + Math.random() * 0.8}s linear forwards`;
-
       layer.appendChild(star);
       setTimeout(() => star.remove(), 2600);
-
       const next = 500 + Math.random() * 1200;
       timer = setTimeout(spawn, next);
     }
-
     spawn();
     return () => {
       running = false;
       clearTimeout(timer);
     };
   }, []);
-
   return <div ref={ref} className="shooting-layer" />;
 }
 
-// ------------ AboutYourself ------------
+/* ------------ AboutYourself ------------ */
 function AboutYourself() {
+  useReveal();
   return (
     <section className="about section">
       <div className="container" style={{ position: "relative", zIndex: 1 }}>
-        <h2>About yourself</h2>
-        <p className="subtle" style={{ marginTop: 10 }}>
-          The Silent Equity journey mirrors the early challenges every trader faces — uncertainty, drawdowns, and the grind.
-          This space shares lessons, systems, and the mindset to navigate markets with clarity.
-          Read this as the story that might be lived next — then write a better chapter here.
+        <h2 className="reveal line">About yourself</h2>
+        <p className="subtle reveal line" style={{ marginTop: 10 }}>
+          The Silent Equity journey mirrors the early challenges every trader faces — uncertainty, drawdowns, and the
+          grind. This space shares lessons, systems, and the mindset to navigate markets with clarity. Read this as the
+          story that might be lived next — then write a better chapter here.
         </p>
-
-        {/* CTA link to the full story */}
-        <div className="about-cta-wrap" style={{ marginTop: 12 }}>
+        <div className="about-cta-wrap reveal line" style={{ marginTop: 12 }}>
           <Link className="readmore-cta" to="/story" aria-label="Read the full Silent Equity story">
             Read more
           </Link>
         </div>
       </div>
-
-      {/* CSS-only moving comets (fallback and ambience) */}
       <div className="css-comet c1" />
       <div className="css-comet c2" />
       <div className="css-comet c3" />
       <div className="css-comet c4" />
       <div className="css-comet c5" />
-
-      {/* JS random stars layered above comets */}
       <ShootingStars />
     </section>
   );
 }
 
-// ------------ CommunityPrograms (new, same look as About) ------------
+/* ------------ CommunityPrograms ------------ */
 function CommunityPrograms() {
+  useReveal();
   return (
     <section className="about section programs">
       <div className="container" style={{ position: "relative", zIndex: 1 }}>
-        <h2>Community Programs</h2>
-        <p className="subtle" style={{ marginTop: 10 }}>
-          At Silent Equity, our commitment is to empower traders through disciplined learning and proven strategies.
-          Our Community Programs are designed to guide members across all skill levels, from beginners forging their path
-          to advanced traders seeking the ultimate edge. By joining our programs, you become part of a focused, supportive
+        <h2 className="reveal line">Community Programs</h2>
+        <p className="subtle reveal line" style={{ marginTop: 10 }}>
+          At Silent Equity, our commitment is to empower traders through disciplined learning and proven strategies. Our
+          Community Programs are designed to guide members across all skill levels, from beginners forging their path to
+          advanced traders seeking the ultimate edge. By joining our programs, you become part of a focused, supportive
           community dedicated to mastery, resilience, and consistent success.
         </p>
-
-        <h3 style={{ marginTop: 16 }}>Initiatives</h3>
+        <h3 className="reveal line" style={{ marginTop: 16 }}>Initiatives</h3>
         <ul className="init-list">
-          <li>
+          <li className="reveal line">
             <strong>Code of Consistency:</strong> A structured course taking traders from beginner to professional with
             disciplined habits and a systematic trading approach.
           </li>
-          <li>
+          <li className="reveal line">
             <strong>The Guaranteed Edge:</strong> An advanced program teaching a mathematically proven hedging method
             for high profitability and consistent returns.
           </li>
         </ul>
-
-        <div className="about-cta-wrap" style={{ marginTop: 12 }}>
+        <div className="about-cta-wrap reveal line" style={{ marginTop: 12 }}>
           <Link className="readmore-cta" to="/initiatives" aria-label="Join the initiatives">
             Join the initiatives
           </Link>
         </div>
       </div>
-
-      {/* CSS-only moving comets (reuse) */}
       <div className="css-comet c1" />
       <div className="css-comet c2" />
       <div className="css-comet c3" />
       <div className="css-comet c4" />
       <div className="css-comet c5" />
-
-      {/* JS random stars layered above comets */}
       <ShootingStars />
     </section>
   );
 }
 
-// ------------ Reviews ------------
+/* ------------ Reviews ------------ */
 function Reviews() {
+  useReveal();
   const data = [
-    { q: "“Consistent setups, clearer rules.”", a: "Aman, FX Swing" },
-    { q: "“Weekly recaps changed my risk.”", a: "Sara, Intraday" },
-    { q: "“Accountability is the edge.”", a: "Vik, Options" },
-    { q: "“Clean charts. Clean mind.”", a: "Rhea, Futures" },
-    { q: "“Passed my eval this month.”", a: "Kian, Prop FX" },
+    { q: '"Consistent setups, clearer rules."', a: "Aman, FX Swing" },
+    { q: '"Weekly recaps changed my risk."', a: "Sara, Intraday" },
+    { q: '"Accountability is the edge."', a: "Vik, Options" },
+    { q: '"Clean charts. Clean mind."', a: "Rhea, Futures" },
+    { q: '"Passed my eval this month."', a: "Kian, Prop FX" },
   ];
   const long = [...data, ...data, ...data];
   return (
     <section className="section">
       <div className="container reviews">
-        <h2>Reviews</h2>
+        <h2 className="reveal line">Reviews</h2>
         <div className="reviews-track" style={{ marginTop: 14 }}>
           {long.map((r, i) => (
-            <div className="review-card" key={i}>
+            <div className="review-card reveal line" key={i}>
               <p style={{ fontWeight: 600 }}>{r.q}</p>
               <p className="subtle" style={{ marginTop: 8 }}>{r.a}</p>
             </div>
@@ -327,57 +365,74 @@ function Reviews() {
   );
 }
 
-// ------------ LeadForm ------------
+/* ------------ LeadForm ------------ */
 function LeadForm() {
+  useReveal();
   return (
     <section id="lead" className="section leadform-section">
       <div className="container">
-        <h2>Activate Your Silent Potential</h2>
-        <form className="form" onSubmit={(e) => { e.preventDefault(); alert("Details submitted!"); }}>
+        <h2 className="reveal line">Activate Your Silent Potential</h2>
+        <form
+          className="form reveal line"
+          onSubmit={(e) => {
+            e.preventDefault();
+            alert("Details submitted!");
+          }}
+        >
           <input className="input" placeholder="Full name" required />
           <input className="input" placeholder="Email" type="email" required />
           <textarea className="textarea" placeholder="What do you trade?" />
-          <button className="button" type="submit">Submit details</button>
+          <button className="button" type="submit">
+            Submit details
+          </button>
         </form>
       </div>
     </section>
   );
 }
 
-// ------------ FloatingCTA (vertical only, right side) ------------
+/* ------------ FloatingCTA (vertical only, right side) ------------ */
 function FloatingCTA() {
   useEffect(() => {
     const paddingTop = 80;
     let y = window.innerHeight * 0.6;
     let vy = 0.45;
     let raf;
-
     const step = () => {
       const h = window.innerHeight;
       y += vy;
-      if (y < paddingTop) { y = paddingTop; vy *= -1; }
-      if (y > h - paddingTop) { y = h - paddingTop; vy *= -1; }
+      if (y < paddingTop) {
+        y = paddingTop;
+        vy *= -1;
+      }
+      if (y > h - paddingTop) {
+        y = h - paddingTop;
+        vy *= -1;
+      }
       document.documentElement.style.setProperty("--cta-y", y + "px");
       raf = requestAnimationFrame(step);
     };
-
-    const onScroll = () => { y += (window.scrollY - y) * 0.0004; };
-
+    const onScroll = () => {
+      y += (window.scrollY - y) * 0.0004;
+    };
     raf = requestAnimationFrame(step);
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => { cancelAnimationFrame(raf); window.removeEventListener("scroll", onScroll); };
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("scroll", onScroll);
+    };
   }, []);
-
   return (
     <div className="floating-cta right-stick" aria-hidden="false">
       <button
-        className="cta-btn"
-        onClick={() => window.open("https://discord.com/invite/your-link", "_blank")}
-        aria-label="Join Discord — $12"
+        className="cta-button-secondary"
+        onClick={() => window.open("https://discord.gg/7gg93JBK", "_blank")}
+        aria-label="Join Discord — $13"
       >
         <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
-          <svg width="16" height="14" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-            <path d="M20.317 4.369A19.791 19.791 0 0 0 16.556 3c-.2.36-.427.85-.586 1.232a17.185 17.185 0 0 0-7.94 0A8.6 8.6 0 0 0 7.444 3a19.79 19.79 0 0 0-3.761 1.369C1.612 8.053.94 11.62 1.107 15.152a19.96 19.96 0 0 0 6.075 3.11c.469-.64.888-1.322 1.247-2.04a12.9 12.9 0 0 1-1.97-.76c.165-.12.326-.245.482-.374a12.94 12.94 0 0 0 9.118 0c.157.13.318.255.482.374-.636.29-1.305.54-1.97.76.359.718.777 1.4 1.247 2.04a19.96 19.96 0 0 0 6.074-3.11c.22-4.34-.534-7.888-3.025-10.783ZM9.75 13.2c-.84 0-1.523-.76-1.523-1.693 0-.933.674-1.693 1.523-1.693.86 0 1.533.76 1.523 1.693 0 .933-.664 1.693-1.523 1.693Zm4.5 0c-.84 0-1.523-.76-1.523-1.693 0-.933.674-1.693 1.523-1.693.86 0 1.533.76 1.523 1.693 0 .933-.664 1.693-1.523 1.693Z" />
+          {/* Clearer Discord icon */}
+          <svg width="20" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419-.0189 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1568 2.4189Z"/>
           </svg>
           <span>JOIN DISCORD—$13</span>
         </span>
@@ -386,27 +441,37 @@ function FloatingCTA() {
   );
 }
 
-// ------------ Home wrapper for "/" route ------------
+/* ------------ Home wrapper for "/" route ------------ */
 function Home() {
+  const [showVideoModal, setShowVideoModal] = useState(false);
+  const youtubeVideoId = "3aDXQZ5MKAs";
   return (
     <>
       <ForexTicker />
-      <Hero />
+      <NebulaLayer />
+      <Hero onShowVideo={() => setShowVideoModal(true)} />
       <AboutYourself />
       <CommunityPrograms />
       <Reviews />
       <LeadForm />
       <FloatingCTA />
+      {showVideoModal && (
+        <VideoModal videoId={youtubeVideoId} onClose={() => setShowVideoModal(false)} />
+      )}
     </>
   );
 }
 
+/* ------------ App ------------ */
 export default function App() {
   return (
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/story" element={<Story />} />
-      <Route path="initiatives" element={<Initiatives />} /> {/* route to separate Initiatives.jsx */}
-    </Routes>
+    <>
+      <ScrollToTop />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/story" element={<Story />} />
+        <Route path="initiatives" element={<Initiatives />} />
+      </Routes>
+    </>
   );
 }
