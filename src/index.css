@@ -1642,3 +1642,308 @@ html, body {
     padding: 16px !important;
   }
 }
+/* ============================================= */
+/* NAVIGATION BAR STYLES */
+/* ============================================= */
+
+.navigation {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10000;
+  background: radial-gradient(
+    ellipse at 315% 5%,
+    #30FFF4cc 0%,
+    #101a20 55%,
+    transparent 100%
+  );
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(127, 247, 234, 0.1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.navigation.scrolled {
+  background: rgba(13, 22, 28, 0.95);
+  border-bottom: 1px solid rgba(127, 247, 234, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.nav-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 70px;
+}
+
+/* ===== LOGO ===== */
+.nav-logo {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  font-family: 'Orbitron', 'Space Grotesk', Poppins, system-ui, sans-serif;
+  font-weight: 800;
+  font-size: 1.4rem;
+  color: #ffffff;
+  transition: all 0.3s ease;
+}
+
+.nav-logo:hover {
+  color: #7ff7ea;
+  transform: translateY(-1px);
+}
+
+.logo-text {
+    
+  background: linear-gradient(135deg, #fdfeff, #05869d);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.logo-accent {
+  color: #12e7cf;
+  margin-left: 2px;
+  font-size: 1.6rem;
+}
+
+/* ===== DESKTOP NAVIGATION ===== */
+.nav-links {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 32px;
+}
+
+.nav-link {
+  text-decoration: none;
+  color: #bfe9e6;
+  font-family: 'Space Grotesk', Poppins, system-ui, sans-serif;
+  font-weight: 500;
+  font-size: 0.95rem;
+  padding: 8px 12px;
+  border-radius: 8px;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.nav-link:hover {
+  color: #7ff7ea;
+  background: rgba(12, 12, 12, 0.1);
+}
+
+.nav-link.active {
+  color: #12e7cf;
+  background: rgba(18, 231, 207, 0.15);
+}
+
+.nav-link.active::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 12px;
+  right: 12px;
+  height: 2px;
+  background: linear-gradient(90deg, #12e7cf, #7ff7ea);
+  border-radius: 2px;
+}
+
+/* ===== CTA BUTTON ===== */
+.cta-nav-button {
+  
+  background: linear-gradient(135deg, #0891b2 0%, #164e63 100%);
+  color: #ffffff;
+  text-decoration: none;
+  padding: 10px 20px;
+  border-radius: 25px;
+  font-family: 'Space Grotesk', Poppins, system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 16px rgba(18, 231, 207, 0.3);
+}
+
+.cta-nav-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(18, 231, 207, 0.4);
+  background: linear-gradient(135deg, #12e7cf 0%, #0891b2 100%);
+}
+
+/* ===== MOBILE MENU TOGGLE ===== */
+.mobile-menu-toggle {
+  display: none;
+  flex-direction: column;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  gap: 4px;
+}
+
+.hamburger-line {
+  width: 24px;
+  height: 2px;
+  background: #7ff7ea;
+  transition: all 0.3s ease;
+  border-radius: 2px;
+}
+
+.hamburger-line.open:nth-child(1) {
+  transform: translateY(6px) rotate(45deg);
+}
+
+.hamburger-line.open:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger-line.open:nth-child(3) {
+  transform: translateY(-6px) rotate(-45deg);
+}
+
+/* ===== MOBILE MENU ===== */
+.mobile-menu {
+  position: fixed;
+  top: 70px;
+  right: -100%;
+  width: 280px;
+  height: calc(100vh - 70px);
+  background: rgba(13, 22, 28, 0.98);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-left: 1px solid rgba(127, 247, 234, 0.2);
+  transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow-y: auto;
+}
+
+.mobile-menu.open {
+  right: 0;
+}
+
+.mobile-nav-links {
+  list-style: none;
+  padding: 40px 24px;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.mobile-nav-link {
+  color: #bfe9e6;
+  text-decoration: none;
+  font-family: 'Space Grotesk', Poppins, system-ui, sans-serif;
+  font-weight: 500;
+  font-size: 1.1rem;
+  padding: 12px 16px;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  border: 1px solid transparent;
+}
+
+.mobile-nav-link:hover,
+.mobile-nav-link.active {
+  color: #12e7cf;
+  background: rgba(18, 231, 207, 0.1);
+  border-color: rgba(18, 231, 207, 0.3);
+}
+
+.mobile-cta-button {
+  background: linear-gradient(135deg, #12e7cf 0%, #0891b2 100%);
+  color: #ffffff;
+  text-decoration: none;
+  padding: 14px 20px;
+  border-radius: 12px;
+  font-family: 'Space Grotesk', Poppins, system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 1rem;
+  text-align: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 16px rgba(18, 231, 207, 0.3);
+  margin-top: 12px;
+  display: block;
+}
+
+.mobile-cta-button:hover {
+  background: linear-gradient(135deg, #0891b2 0%, #164e63 100%);
+  transform: translateY(-1px);
+}
+
+.mobile-menu-backdrop {
+  position: fixed;
+  top: 70px;
+  left: 0;
+  right: 280px;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+@media (max-width: 768px) {
+  .desktop-nav {
+    display: none;
+  }
+  
+  .mobile-menu-toggle {
+    display: flex;
+  }
+  
+  .nav-container {
+    padding: 0 16px;
+    height: 60px;
+  }
+  
+  .nav-logo {
+    font-size: 1.2rem;
+  }
+  
+  .mobile-menu {
+    top: 60px;
+    height: calc(100vh - 60px);
+  }
+  
+  .mobile-menu-backdrop {
+    top: 60px;
+  }
+  
+  /* Adjust mobile video button spacing with navigation */
+  .mobile-video-button {
+    margin-top: 80px !important;
+  }
+  
+  .mobile-floating-cta {
+    right: 10px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .mobile-menu {
+    width: 100%;
+    right: -100%;
+  }
+  
+  .mobile-menu.open {
+    right: 0;
+  }
+  
+  .mobile-menu-backdrop {
+    display: none;
+  }
+}
+
+/* ===== ENSURE NAVIGATION DOESN'T INTERFERE WITH CONTENT ===== */
+body {
+  padding-top: 70px;
+}
+
+@media (max-width: 768px) {
+  body {
+    padding-top: 60px;
+  }
+}

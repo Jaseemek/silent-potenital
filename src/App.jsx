@@ -3,35 +3,154 @@ import { Routes, Route, Link, useLocation } from "react-router-dom";
 import Story from "./Story";
 import Initiatives from "./Services";
 
+/* ---------- Navigation Component ---------- */
+function Navigation() {
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const location = useLocation();
+
+  // Handle scroll effect
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Close mobile menu on route change
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [location]);
+
+  const navLinks = [
+    { path: '/', label: 'Home' },
+    { path: '/story', label: 'Our Story' },
+    { path: '/initiatives', label: 'Programs' }
+  ];
+
+  return (
+    <nav className={`navigation ${isScrolled ? 'scrolled' : ''}`}>
+      <div className="nav-container">
+        {/* Logo/Brand */}
+        <Link to="/" className="nav-logo">
+          <span className="logo-text">Silent Equity</span>
+          <span className="logo-accent">.</span>
+        </Link>
+
+        {/* Desktop Navigation */}
+        <ul className="nav-links desktop-nav">
+          {navLinks.map((link) => (
+            <li key={link.path}>
+              <Link
+                to={link.path}
+                className={`nav-link ${location.pathname === link.path ? 'active' : ''}`}
+              >
+                {link.label}
+              </Link>
+            </li>
+          ))}
+        </ul>
+
+        {/* CTA Button */}
+        <div className="nav-cta desktop-nav">
+          <a
+            href="https://discord.gg/7gg93JBK"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="cta-nav-button"
+          >
+            Join Discord
+          </a>
+        </div>
+
+        {/* Mobile Hamburger */}
+        <button
+          className="mobile-menu-toggle"
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          aria-label="Toggle mobile menu"
+        >
+          <span className={`hamburger-line ${isMobileMenuOpen ? 'open' : ''}`}></span>
+          <span className={`hamburger-line ${isMobileMenuOpen ? 'open' : ''}`}></span>
+          <span className={`hamburger-line ${isMobileMenuOpen ? 'open' : ''}`}></span>
+        </button>
+      </div>
+
+      {/* Mobile Menu Overlay */}
+      <div className={`mobile-menu ${isMobileMenuOpen ? 'open' : ''}`}>
+        <ul className="mobile-nav-links">
+          {navLinks.map((link) => (
+            <li key={link.path}>
+              <Link
+                to={link.path}
+                className={`mobile-nav-link ${location.pathname === link.path ? 'active' : ''}`}
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                {link.label}
+              </Link>
+            </li>
+          ))}
+          <li>
+            <a
+              href="https://discord.gg/7gg93JBK"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mobile-cta-button"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              Join Discord
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      {/* Mobile Menu Backdrop */}
+      {isMobileMenuOpen && (
+        <div 
+          className="mobile-menu-backdrop"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      )}
+    </nav>
+  );
+}
+
 /* ---------- AGGRESSIVE ScrollToTop (Multiple Fallbacks) ---------- */
 function ScrollToTop() {
   const { pathname } = useLocation();
 
+  // Disable scroll restoration immediately
   useLayoutEffect(() => {
     if ("scrollRestoration" in window.history) {
       window.history.scrollRestoration = "manual";
     }
   }, []);
 
+  // Immediate scroll reset before paint
   useLayoutEffect(() => {
+    // Temporarily disable smooth scrolling
     const htmlStyle = document.documentElement.style.scrollBehavior;
     const bodyStyle = document.body.style.scrollBehavior;
     document.documentElement.style.scrollBehavior = "auto";
     document.body.style.scrollBehavior = "auto";
 
+    // Multiple scroll reset attempts
     window.scrollTo(0, 0);
     document.documentElement.scrollTop = 0;
     document.body.scrollTop = 0;
     document.documentElement.scrollLeft = 0;
     document.body.scrollLeft = 0;
 
+    // Restore scroll behavior after reset
     setTimeout(() => {
       document.documentElement.style.scrollBehavior = htmlStyle;
       document.body.style.scrollBehavior = bodyStyle;
     }, 0);
   }, [pathname]);
 
+  // Additional fallback attempts after paint
   useEffect(() => {
+    // Multiple timed attempts to ensure scroll happens
     const timeouts = [
       setTimeout(() => {
         window.scrollTo({ top: 0, left: 0, behavior: "auto" });
@@ -204,11 +323,7 @@ function Hero({ onShowVideo }) {
           className="cta-button-video reveal line mobile-video-button"
           onClick={onShowVideo}
           aria-label="What is Silent Equity?"
-          style={{ 
-            marginTop: "189px",
-            // Mobile inline override for emergency
-            '@media (max-width: 768px)': { marginTop: '80px' }
-          }}
+          style={{ marginTop: "189px" }}
         >
           <span className="play-icon mobile-play-icon">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
@@ -266,12 +381,12 @@ function ShootingStars() {
   return <div ref={ref} className="shooting-layer mobile-shooting-layer" />;
 }
 
-/* ------------ AboutYourself - SIMPLIFIED ------------ */
+/* ------------ AboutYourself ------------ */
 function AboutYourself() {
   useReveal();
   return (
-    <section className="about section">
-      <div className="container" style={{ position: "relative", zIndex: 1 }}>
+    <section className="about section mobile-about">
+      <div className="container mobile-container" style={{ position: "relative", zIndex: 1 }}>
         <h2 className="reveal line mobile-section-title">About yourself</h2>
         <p className="subtle reveal line mobile-section-text" style={{ marginTop: 10 }}>
           The Silent Equity journey mirrors the early challenges every trader faces — uncertainty, drawdowns, and the
@@ -284,7 +399,6 @@ function AboutYourself() {
           </Link>
         </div>
       </div>
-      {/* REMOVE mobile-comet classes - use original classes */}
       <div className="css-comet c1" />
       <div className="css-comet c2" />
       <div className="css-comet c3" />
@@ -295,12 +409,12 @@ function AboutYourself() {
   );
 }
 
-/* ------------ CommunityPrograms - SIMPLIFIED ------------ */
+/* ------------ CommunityPrograms ------------ */
 function CommunityPrograms() {
   useReveal();
   return (
-    <section className="about section programs">
-      <div className="container" style={{ position: "relative", zIndex: 1 }}>
+    <section className="about section programs mobile-programs">
+      <div className="container mobile-container" style={{ position: "relative", zIndex: 1 }}>
         <h2 className="reveal line mobile-section-title">Community Programs</h2>
         <p className="subtle reveal line mobile-section-text" style={{ marginTop: 10 }}>
           At Silent Equity, our commitment is to empower traders through disciplined learning and proven strategies. Our
@@ -325,7 +439,6 @@ function CommunityPrograms() {
           </Link>
         </div>
       </div>
-      {/* REMOVE mobile-comet classes - use original classes */}
       <div className="css-comet c1" />
       <div className="css-comet c2" />
       <div className="css-comet c3" />
@@ -336,7 +449,7 @@ function CommunityPrograms() {
   );
 }
 
-/* ------------ Reviews - SIMPLIFIED ------------ */
+/* ------------ Reviews ------------ */
 function Reviews() {
   useReveal();
   const data = [
@@ -348,15 +461,14 @@ function Reviews() {
   ];
   const long = [...data, ...data, ...data];
   return (
-    <section className="section">
-      <div className="container reviews">
+    <section className="section mobile-reviews-section">
+      <div className="container reviews mobile-reviews-container">
         <h2 className="reveal line mobile-section-title">Reviews</h2>
-        {/* Use original classes, just add mobile-reviews-track for responsive styling */}
         <div className="reviews-track mobile-reviews-track" style={{ marginTop: 14 }}>
           {long.map((r, i) => (
             <div className="review-card reveal line mobile-review-card" key={i}>
-              <p style={{ fontWeight: 600 }}>{r.q}</p>
-              <p className="subtle" style={{ marginTop: 8 }}>{r.a}</p>
+              <p className="mobile-review-quote" style={{ fontWeight: 600 }}>{r.q}</p>
+              <p className="subtle mobile-review-author" style={{ marginTop: 8 }}>{r.a}</p>
             </div>
           ))}
         </div>
@@ -364,7 +476,6 @@ function Reviews() {
     </section>
   );
 }
-
 
 /* ------------ LeadForm ------------ */
 function LeadForm() {
@@ -510,6 +621,7 @@ function Home() {
 export default function App() {
   return (
     <>
+      <Navigation />
       <ScrollToTop />
       <Routes>
         <Route path="/" element={<Home />} />
