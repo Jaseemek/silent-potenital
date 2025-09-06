@@ -2,6 +2,7 @@ import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from "re
 import { Routes, Route, Link, useLocation } from "react-router-dom";
 import Story from "./Story";
 import Initiatives from "./Services";
+import Form from "./form"; // NEW: import the Form page
 
 /* ---------- Navigation Component ---------- */
 function Navigation() {
@@ -52,16 +53,15 @@ function Navigation() {
           ))}
         </ul>
 
-        {/* CTA Button */}
+        {/* CTA Button (renamed and routed to /form) */}
         <div className="nav-cta desktop-nav">
-          <a
-            href="https://discord.gg/7gg93JBK"
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            to="/form"
             className="cta-nav-button"
+            aria-label="Take Position"
           >
-            Join Discord
-          </a>
+            Take Position💰
+          </Link>
         </div>
 
         {/* Mobile Hamburger */}
@@ -91,15 +91,13 @@ function Navigation() {
             </li>
           ))}
           <li>
-            <a
-              href="https://discord.gg/7gg93JBK"
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              to="/form"
               className="mobile-cta-button"
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              Join Discord
-            </a>
+              Take Position💰
+            </Link>
           </li>
         </ul>
       </div>
@@ -150,31 +148,26 @@ function ScrollToTop() {
 
   // Additional fallback attempts after paint
   useEffect(() => {
-    // Multiple timed attempts to ensure scroll happens
     const timeouts = [
       setTimeout(() => {
         window.scrollTo({ top: 0, left: 0, behavior: "auto" });
         document.documentElement.scrollTop = 0;
         document.body.scrollTop = 0;
       }, 0),
-      
       setTimeout(() => {
         window.scrollTo({ top: 0, left: 0, behavior: "auto" });
         document.documentElement.scrollTop = 0;
         document.body.scrollTop = 0;
       }, 10),
-      
       setTimeout(() => {
         window.scrollTo({ top: 0, left: 0, behavior: "auto" });
         document.documentElement.scrollTop = 0;
         document.body.scrollTop = 0;
       }, 50),
-      
       setTimeout(() => {
         window.scrollTo({ top: 0, left: 0, behavior: "auto" });
       }, 100)
     ];
-
     return () => timeouts.forEach(clearTimeout);
   }, [pathname]);
 
@@ -545,7 +538,6 @@ function FloatingCTA() {
   }, []);
 
   const goToDiscord = () => {
-    console.log("Discord button clicked!");
     window.location.href = "https://discord.gg/7gg93JBK";
   };
 
@@ -577,14 +569,6 @@ function FloatingCTA() {
           fontSize: '10px',
           boxShadow: '0 4px 16px rgba(10, 69, 136, 0.3)',
           transition: 'all 0.3s ease'
-        }}
-        onMouseEnter={(e) => {
-          e.target.style.transform = 'translateY(-2px)';
-          e.target.style.boxShadow = '0 6px 20px rgba(10, 69, 136, 0.5)';
-        }}
-        onMouseLeave={(e) => {
-          e.target.style.transform = 'translateY(0)';
-          e.target.style.boxShadow = '0 4px 16px rgba(10, 69, 136, 0.3)';
         }}
       >
         <svg width="20" height="16" viewBox="0 0 24 24" fill="currentColor" className="mobile-discord-icon">
@@ -626,7 +610,8 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/story" element={<Story />} />
-        <Route path="initiatives" element={<Initiatives />} />
+        <Route path="/initiatives" element={<Initiatives />} />
+        <Route path="/form" element={<Form />} /> {/* NEW route to Form page */}
       </Routes>
     </>
   );
