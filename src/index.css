@@ -1853,7 +1853,8 @@ html, body {
 }
 
 .mobile-cta-button {
-  background: linear-gradient(135deg, #12e7cf 0%, #0891b2 100%);
+  
+  background: linear-gradient(135deg, #0891b2 0%, #164e63 100%);
   color: #ffffff;
   text-decoration: none;
   padding: 14px 20px;
@@ -1869,7 +1870,7 @@ html, body {
 }
 
 .mobile-cta-button:hover {
-  background: linear-gradient(135deg, #0891b2 0%, #164e63 100%);
+  background: linear-gradient(135deg, #12e7cf 0%, #0891b2 100%);
   transform: translateY(-1px);
 }
 

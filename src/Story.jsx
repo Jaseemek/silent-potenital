@@ -292,12 +292,12 @@ function HeroCarousel({ visible, items }) {
           to  { transform: translate(120vw, 120vh) rotate(45deg); opacity:0; }
         }
 
-        .stage{ position:relative; width:min(54vw, 650px); height:min(68vh, 460px);
+        .stage{ position:relative; width:min(54vw, 540px); height:min(68vh, 330px);
           display:flex; align-items:center; justify-content:center; perspective: 1400px; z-index:1; }
 
         .card{
           position:absolute; inset:0; padding: clamp(16px, 3.5vw, 26px);
-          border-radius: 20px; overflow:auto; color:#e6faff;
+          border-radius: 21x; overflow:auto; color:#e6faff;
           background: rgba(15,25,35,.72);
           backdrop-filter: blur(14px) saturate(150%); -webkit-backdrop-filter: blur(14px) saturate(150%);
           border: 1px solid rgba(255,255,255,.08);
